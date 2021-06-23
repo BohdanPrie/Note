@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" name="google" content="notranslate">
+<title>Title</title>
+<link rel="shortcut icon" href="pictures/page.png">
+<link rel="stylesheet" href="css/main.css">
+<script type="text/javascript" src="js/main.js"></script>
+
+</head>
+<body>
+	<div class="topnav" style="text-align: right">
+		<a href="/main"><b>Main</b></a> <a href="/notes"><b>Notes</b></a>
+		<a onclick="exit()" style="margin-right: 0px;"><b>Exit</b></a>
+	</div>
+	<div style="display: flex; justify-content: center;">
+		<div class="main-container">
+			<div class="login-container">
+				<a style="font-size: 25px; margin-bottom: 20px; margin-top: 0px;"><b>Change Login</b></a> <input id="login" class="loginInput" placeholder="New Login">
+				<div id="login_error" style="display: none; width: 100%;"></div>
+				<button class="submitBtn" style="width: 100%; margin-top: 12px;"
+					onclick="changeLogin()">Change Login</button>
+				<a style="font-size: 25px; margin-top: 40px; margin-bottom: 0px;"><b>Change Password</b></a> <a><b>Current Password</b></a> <input id="old_password"
+					class="loginInput" placeholder="Current Password" type="password">
+				<a><b>New Password</b></a> <input id="new_password"
+					class="loginInput" placeholder="New Password" type="password">
+				<a><b>Confirm new Password</b></a> <input id="conf_new_password"
+					class="loginInput" placeholder="Confirm new Password"
+					type="password">
+				<div id="password_error" style="display: none; width: 100%;"></div>
+				<button class="submitBtn" style="width: 100%; margin: 12px 0px;"
+					onclick="changePassword()">Change Password</button>
+				<button class="submitBtn"
+					style="height: 24px; width: 100%; margin: 12px 0px; font-size: 15px; line-height: 0px; color: #ff0000;"
+					onclick="changeDisplay('confDeleteUser', 'table')">Delete account</button>	
+				<div style="display: none; width: 100%;" id="confDeleteUser" >
+					<a><b>Current Password</b></a> 
+					<input id="old_passwordForDelete" class="loginInput" placeholder="Current Password" type="password" style="margin-top:8px;">
+					<div id="password_errorForDelete" style="display: none; width: 100%;"></div>
+					<button class="submitBtn"
+					style="height: 24px; width: 100%; margin: 12px 0px; font-size: 15px; line-height: 0px; color: #ff0000;"
+					onclick="deleteAccount()">Delete</button>	
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

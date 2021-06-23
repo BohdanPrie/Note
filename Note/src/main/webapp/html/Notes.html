@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" name="google" content="notranslate">
+<title>Title</title>
+<link rel="shortcut icon" href="/pictures/page.png">
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+body {
+	padding-bottom: 0px;
+	margin-bottom: 0px;
+}
+
+textarea {
+	resize: none;
+}
+</style>
+<script type="text/javascript" src="/js/main.js"></script>
+<script>     
+document.addEventListener("DOMContentLoaded", () => {
+	getAllNotes();
+});
+
+document.addEventListener("keydown", function(event) {
+	checkSendPattern(event);
+});
+
+window.addEventListener('resize', changeStyleForScreen);
+window.onresize = changeStyleForScreen();
+    </script>
+</head>
+<body>
+	<div class="navigation" style="justify-content: space-between;">
+		<div>
+			<a class="menu">
+				<img src="/pictures/menu.jpg" style="width: 40px; height: 30px;" onclick="showFilterBtns()">
+			</a>
+		</div>
+		<div style="text-align: right; display: flex; align-items: center; justify-content: flex-end;">
+			<div class="topnav">
+				<a href="/main"><b>Main</b></a>
+			</div>
+			<div>
+				<a href="/profile" class="profile"> <img src="/pictures/gear.png"
+					width="30" height="30"></a>
+			</div>
+		</div>
+	</div>
+	<div class="main_container">
+		<div style="" class="search" id="filterBtns">
+			<div class="search-container">
+				<div class="btn_filter" style="width: 100%;">
+					<button style="width: 100%; margin-top: 0px;" onclick="addNote()">
+						<b>Add Note</b>
+					</button>
+					<div class="search-input">
+						<input style="width: 85%; outline:none;" type="text" placeholder="Search..." name="q" id="q" autocomplete="off">
+						<a class="search-button" onclick="searchByPattern()">
+							<i class="fa fa-search"></i>
+						</a>
+					</div>
+					<button style="width: 100%;" onclick="sortByDateCreation()">
+						<b>Sort by date creation</b>
+					</button>
+					<button style="width: 100%;" onclick="deleteAllNotes()">
+						<b>Delete all notes</b>
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class="pretty_notes">
+			<div class="notes" id="notes-container"></div>
+			<div class="text_container" id="format-container">
+				<div class="work_with_notes">
+					<button style="font-size: 15px;" onclick="saveNote()" class="search-button">
+						<b>Save</b>
+					</button>
+					<button class="search-button" style="font-size: 15px; margin-right: 0%;" onclick="deleteNote()">
+						<b>Delete</b>
+					</button>
+				</div>
+				<textarea placeholder="Title" class="formNote" style="font-size: 30px; font-weight: bold; height: 16%; margin-bottom: 5%;"
+					id="titleText" maxlength="80"></textarea>
+				<textarea placeholder="Note" class="formNote"
+					style="padding-top: 0px; vertical-align: top; margin-bottom: 3%;" id="noteText"></textarea>
+			</div>
+		</div>
+
+	</div>
+</body>
+</html>

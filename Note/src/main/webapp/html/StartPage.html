@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Notes</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" name="google" content="notranslate">
+<link rel="shortcut icon" href="/pictures/page.png">
+<link rel="stylesheet" href="/css/main.css">
+
+<style>
+* {
+	box-sizing: border-box;
+}
+
+.header {
+	text-align: center;
+	padding: 20px 15px;
+	-webkit-justify-content: space-between;
+	-ms-flex-pack: justify;
+	justify-content: space-between;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+}
+</style>
+<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+	<div class="navigation">
+		<div class="topnav" style="text-align: right">
+			<a onclick="changeDisplay('log', 'table')"><b>Log in</b></a> 
+			<a onclick="changeDisplay('reg', 'table')" style="margin-right: 0px;"><b>Sign up</b></a>
+		</div>
+	</div>
+	<div>
+		<div style="height: 100%;">
+			<div class="block_photo-text">
+				<img src="/pictures/mainPage.jpg" class="block_photo">
+				<div style="display: -webkit-box; display: -webkit-flex; display: -ms-flexbox; display: flex; flex-direction: column;">
+					<div style="height: 100%; display: -webkit-box; display: -webkit-flex; display: -ms-flexbox; display: flex; flex-direction: column;">
+						<a style="margin-top: 30px;"><b>Work where you want</b></a> 
+						<a style="font-size: 20px; margin-top: 5px;">If you have network you can work from any place in the world</a>
+					</div>
+					<div style="height: 100%; display: -webkit-box; display: -webkit-flex; display: -ms-flexbox; display: flex; flex-direction: column; margin-top: 20px;">
+						<a><b>Sort as you want</b></a> 
+						<a style="font-size: 20px; margin-top: 5px;">You can sort your notes as you want: 
+						<br> - by time creation 
+						<br> - by last change
+						</a>
+					</div>
+					<div style="height: 100%; display: -webkit-box; display: -webkit-flex; display: -ms-flexbox; display: flex; flex-direction: column; margin-top: 20px;">
+						<a><b>Don't be afraid to forget</b></a> 
+						<a style="font-size: 20px; margin-top: 5px;">Using notes you can be sure you won't forget anything you need</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div>
+			<div id="log" class="aut-div" onclick="changeElems('log', 'none')">
+				<iframe class="authorisation" src="login" title="Authorisation page"></iframe>
+			</div>
+			<div id="reg" class="aut-div" onclick="changeElems('reg', 'none')">
+				<iframe class="authorisation reg" src="registration" title="Registration page"></iframe>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
