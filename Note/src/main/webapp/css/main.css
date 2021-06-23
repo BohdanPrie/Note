@@ -435,10 +435,16 @@ body {
 }
 
 .formNote {
+<<<<<<< HEAD
 	margin-bottom: 5%;
 	font-size: 20px;
 	border: none;
 	height: 76%;
+=======
+	font-size: 20px;
+	border: none;
+	height: 80%;
+>>>>>>> 3de4aacdff43db2cef94f151e2dafd10d4c68e4e
 	padding: 0px 15px;
 }
 

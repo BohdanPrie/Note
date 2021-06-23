@@ -520,7 +520,19 @@ function getWidth() {
 	if (document.body) {
 		return document.body.clientWidth;
 	}
-}
+
+	  if (self.innerWidth) {
+	    return self.innerWidth;
+	  }
+
+	  if (document.documentElement && document.documentElement.clientWidth) {
+	    return document.documentElement.clientWidth;
+	  }
+
+	  if (document.body) {
+	    return document.body.clientWidth;
+	  }
+	}
 
 function changeStyleForScreen() {
 	var filterBtns = document.getElementById('filterBtns');

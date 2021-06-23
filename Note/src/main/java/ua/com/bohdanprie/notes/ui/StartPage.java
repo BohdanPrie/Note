@@ -22,7 +22,7 @@ public class StartPage extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 		LOG.info("User enter the main page");
 		if (request.getSession(false) == null) {
 			WebUtils.loadResource("StartPage.html", response);

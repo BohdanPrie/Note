@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -34,11 +35,12 @@ public class AuthFilter implements Filter {
 
 		String[] path = request.getRequestURI().split("/");
 		String page = path[path.length - 1];
-		
+
 		HttpSession session = request.getSession(false);
 		String UserAgent = request.getHeader("User-Agent");
 		
 		if (session == null || !UserAgent.equals(session.getAttribute("User-Agent"))) {
+
 			if ("profile".equals(page) || "notes".equals(page)) {
 				response.sendRedirect("/main");
 				return;
@@ -47,6 +49,7 @@ public class AuthFilter implements Filter {
 		
 		if(page.endsWith(".css") || page.endsWith(".js")) {
 			WebUtils.loadResource(page, response);
+
 			return;
 		}
 		

@@ -16,10 +16,10 @@ import ua.com.bohdanprie.notes.domain.User;
 
 public class NoteDao {
 	private DaoFactory daoFactory = DaoFactory.getInstance();
-	private static final Logger LOG = LogManager.getLogger(NoteDao.class.getName());
+	private static final Logger Log = LogManager.getLogger(NoteDao.class);
 
 	public void changeNote(Note note, User user) {
-		LOG.info("Changing note with user's login " + user.getLogin());
+		Log.info("Changing note with user's login " + user.getLogin());
 		String SQL = "UPDATE notes.notes SET title = ?, body = ?, time_change = ? where user_login = ? AND id = ?";
 
 		Connection connection = null;
@@ -41,7 +41,8 @@ public class NoteDao {
 				throw new DaoException("Fail to change Note", e);
 			}
 		} catch (DBException e) {
-			LOG.error("Connection fail", e);
+			Log.error("Connection fail", e);
+
 			throw new DaoException("Connection fail", e);
 		} finally {
 			try {
@@ -171,7 +172,7 @@ public class NoteDao {
 		return note;
 	}
 	
-	public ArrayList<Note> searchByPattern(User user, String pattern) {
+	public ArrayList<Note> searchByPattern(User user, String pattern){
 		ArrayList<Note> notes = new ArrayList<>();
 		
 		String SQL = "SELECT * FROM notes.notes WHERE user_login = ? AND (title ILIKE ? OR body ILIKE ?);";
@@ -220,7 +221,7 @@ public class NoteDao {
 		return notes;
 	}
 
-	public ArrayList<Note> getAllNotes(User user) throws DaoException {
+	public ArrayList<Note> getAllNotes(User user) {
 		ArrayList<Note> notes = new ArrayList<>();
 
 		String SQL = "SELECT * FROM notes.notes WHERE user_login = ?;";
@@ -247,7 +248,6 @@ public class NoteDao {
 				throw new DaoException("Fail to get all notes", e);
 			}
 		} catch (DBException e) {
-			
 			throw new DaoException("Connection fail", e);
 		} finally {
 			try {

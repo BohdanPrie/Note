@@ -26,13 +26,6 @@ public class DaoFactory {
 		
 	}
 
-	public static DaoFactory getInstance() {
-		if(daoFactory == null) {
-			daoFactory = new DaoFactory();
-		}
-		return daoFactory;
-	}
-	
 	public UserDao getUserDao() {
 		if(userDao == null) {
 			userDao = new UserDao();
@@ -45,6 +38,13 @@ public class DaoFactory {
 			noteDao = new NoteDao();
 		}
 		return noteDao;
+	}
+	
+	public static DaoFactory getInstance() {
+		if(daoFactory == null) {
+			daoFactory = new DaoFactory();
+		}
+		return daoFactory;
 	}
 	
 	public Connection getConnection() {
