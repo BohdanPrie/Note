@@ -15,14 +15,6 @@ public class DaoFactory {
 	private static DaoFactory daoFactory;
 	private UserDao userDao;
 	private NoteDao noteDao;
-		
-	/*{ // delete later
-		try {
-			Class.forName("org.postgresql.Driver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-	}*/
 	
 	private DaoFactory() {
 		
