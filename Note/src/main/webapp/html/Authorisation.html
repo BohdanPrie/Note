@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" name="google" content="notranslate">
+<title>Login</title>
+<link rel="shortcut icon" href="pictures/page.png">
+<link rel="stylesheet" href="css/main.css">
+<style>
+body {
+	padding: 0px;
+}
+</style>
+<script type="text/javascript" src="js/main.js"></script>
+<script>
+document.addEventListener("keydown", function(event) {
+	if (event.key == 'Enter'){
+		validate();
+	}
+});
+</script>
+</head>
+<body>
+	<div class="user_enter_container">
+		<div class="formAuth">
+			<input type="text" name="login" placeholder="login" autocapitalize="off" class="loginInput" required="required" id="login" style="margin-top: 7px;">
+			<input type="password" name="password" placeholder="password" autocapitalize="off" class="loginInput" required="required" id="password" style="margin-top: 24px;">
+			<div id="message_place" style="margin-top: 17px; display: none;"></div>
+			<button type="submit" class="submitBtn" name="add" value="LogIn" onclick="validate()" style="margin-top: 20px;">Log in</button>
+		</div>
+	</div>
+</body>
+</html>
