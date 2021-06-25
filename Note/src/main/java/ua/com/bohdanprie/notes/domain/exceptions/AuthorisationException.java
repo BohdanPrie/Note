@@ -1,4 +1,4 @@
-package ua.com.bohdanprie.notes.domain;
+package ua.com.bohdanprie.notes.domain.exceptions;
 
 public class AuthorisationException extends RuntimeException {
 	public AuthorisationException() {

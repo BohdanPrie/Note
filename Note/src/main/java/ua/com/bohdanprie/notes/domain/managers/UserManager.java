@@ -6,8 +6,8 @@ import org.apache.logging.log4j.Logger;
 import ua.com.bohdanprie.notes.dao.DaoException;
 import ua.com.bohdanprie.notes.dao.DaoFactory;
 import ua.com.bohdanprie.notes.dao.UserDao;
-import ua.com.bohdanprie.notes.domain.AuthorisationException;
 import ua.com.bohdanprie.notes.domain.entities.User;
+import ua.com.bohdanprie.notes.domain.exceptions.AuthorisationException;
 
 public class UserManager {
 	private static final Logger LOG = LogManager.getLogger(NoteManager.class.getName());

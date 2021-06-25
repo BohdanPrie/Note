@@ -1,8 +1,8 @@
 package ua.com.bohdanprie.notes.ui.servlet;
 
-import ua.com.bohdanprie.notes.domain.AuthorisationException;
 import ua.com.bohdanprie.notes.domain.ManagerFactory;
 import ua.com.bohdanprie.notes.domain.entities.User;
+import ua.com.bohdanprie.notes.domain.exceptions.AuthorisationException;
 import ua.com.bohdanprie.notes.domain.managers.UserManager;
 import ua.com.bohdanprie.notes.ui.WebUtils;
 
