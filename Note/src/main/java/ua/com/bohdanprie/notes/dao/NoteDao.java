@@ -11,15 +11,15 @@ import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ua.com.bohdanprie.notes.domain.Note;
-import ua.com.bohdanprie.notes.domain.User;
+import ua.com.bohdanprie.notes.domain.entities.Note;
+import ua.com.bohdanprie.notes.domain.entities.User;
 
 public class NoteDao {
 	private DaoFactory daoFactory = DaoFactory.getInstance();
 	private static final Logger LOG = LogManager.getLogger(NoteDao.class.getName());
 
 	public void changeNote(Note note, User user) {
-		LOG.info("Changing note of user's login = " + user.getLogin());
+		LOG.trace("Changing note of user with login = " + user.getLogin());
 		String SQL = "UPDATE notes.notes SET title = ?, body = ?, time_change = ? where user_login = ? AND id = ?";
 
 		Connection connection = null;
@@ -27,24 +27,29 @@ public class NoteDao {
 		ResultSet resultSet = null;
 
 		try {
-			LOG.trace("");
+			LOG.trace("Creating connection");
 			connection = daoFactory.getConnection();
 			try {
+				LOG.trace("Preparing statement");
 				statement = connection.prepareStatement(SQL);
 				statement.setString(1, note.getTitle());
 				statement.setString(2, note.getBody());
 				statement.setTimestamp(3, new Timestamp(note.getTimeChange().getTime()));
 				statement.setString(4, user.getLogin());
 				statement.setInt(5, note.getId());
-				statement.execute();
-
+				try {
+					LOG.trace("Executing SQL");
+					statement.executeUpdate();
+				} catch (SQLException e) {
+					LOG.error("Fail to change the note of user with login = " + user.getLogin(), e);
+				}
 			} catch (SQLException e) {
-				LOG.error("Fail to change the note in user = " + user.getLogin(), e);
-				throw new DaoException("Fail to change Note", e);
+				LOG.error("Fail to prepare statement", e);
 			}
 		} catch (DBException e) {
-			LOG.error("Connection fail", e);
+			LOG.error("Fail to create connection", e);
 		} finally {
+			LOG.trace("Closing elements");
 			try {
 				if (connection != null) {
 					connection.close();
@@ -97,7 +102,7 @@ public class NoteDao {
 			}
 		}
 	}
-	
+
 	public void deleteNote(int id, User user) {
 		String SQL = "DELETE FROM notes.notes WHERE user_login = ? AND id = ?;";
 
@@ -172,16 +177,16 @@ public class NoteDao {
 		}
 		return note;
 	}
-	
-	public ArrayList<Note> searchByPattern(User user, String pattern){
+
+	public ArrayList<Note> searchByPattern(User user, String pattern) {
 		ArrayList<Note> notes = new ArrayList<>();
-		
+
 		String SQL = "SELECT * FROM notes.notes WHERE user_login = ? AND (title ILIKE ? OR body ILIKE ?);";
-		
+
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
-		
+
 		try {
 			connection = daoFactory.getConnection();
 			try {
@@ -192,8 +197,7 @@ public class NoteDao {
 
 				resultSet = statement.executeQuery();
 				while (resultSet.next()) {
-					Note note = new Note(resultSet.getString("title"), 
-							resultSet.getString("body"),
+					Note note = new Note(resultSet.getString("title"), resultSet.getString("body"),
 							resultSet.getInt("id"));
 					note.setTimeCreation(resultSet.getTimestamp("time_creation"));
 					note.setTimeCreation(resultSet.getTimestamp("time_creation"));

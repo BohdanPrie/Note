@@ -1,4 +1,4 @@
-package ua.com.bohdanprie.notes.domain;
+package ua.com.bohdanprie.notes.domain.entities;
 
 import java.util.ArrayList;
 import java.util.List;

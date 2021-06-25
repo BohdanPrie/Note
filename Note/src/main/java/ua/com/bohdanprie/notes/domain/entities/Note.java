@@ -1,4 +1,4 @@
-package ua.com.bohdanprie.notes.domain;
+package ua.com.bohdanprie.notes.domain.entities;
 
 import java.util.Date;
 import java.util.Objects;

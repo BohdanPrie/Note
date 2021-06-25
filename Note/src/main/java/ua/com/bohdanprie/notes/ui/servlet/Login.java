@@ -1,8 +1,10 @@
-package ua.com.bohdanprie.notes.ui;
+package ua.com.bohdanprie.notes.ui.servlet;
 
+import ua.com.bohdanprie.notes.domain.AuthorisationException;
 import ua.com.bohdanprie.notes.domain.ManagerFactory;
-import ua.com.bohdanprie.notes.domain.User;
-import ua.com.bohdanprie.notes.domain.UserManager;
+import ua.com.bohdanprie.notes.domain.entities.User;
+import ua.com.bohdanprie.notes.domain.managers.UserManager;
+import ua.com.bohdanprie.notes.ui.WebUtils;
 
 import java.io.IOException;
 
@@ -35,19 +37,21 @@ public class Login extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+		LOG.trace("Post request");
+		
 		String login = request.getParameter("login");
 		String password = request.getParameter("password");
+		
 		try {
 			LOG.trace("Authorisation user with login = " + login);
 			User user = userManager.authorisation(login, password);
 			request.getSession().setAttribute("user", user);
 			request.getSession().setAttribute("User-Agent", request.getHeader("User-Agent"));
 			response.setStatus(HttpServletResponse.SC_CREATED);
-		} catch (NullPointerException e) {
+		} catch (AuthorisationException e) {
+			LOG.warn("Authorisation user with login = " + login + " failed", e);
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			response.getWriter().write(e.getMessage());
-			e.printStackTrace();
 		}
 	}
 }

@@ -1,4 +1,4 @@
-package ua.com.bohdanprie.notes.domain;
+package ua.com.bohdanprie.notes.domain.managers;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -6,44 +6,44 @@ import org.apache.logging.log4j.Logger;
 import ua.com.bohdanprie.notes.dao.DaoException;
 import ua.com.bohdanprie.notes.dao.DaoFactory;
 import ua.com.bohdanprie.notes.dao.UserDao;
+import ua.com.bohdanprie.notes.domain.AuthorisationException;
+import ua.com.bohdanprie.notes.domain.entities.User;
 
 public class UserManager {
 	private static final Logger LOG = LogManager.getLogger(NoteManager.class.getName());
 	private UserDao userDao;
-	private NoteManager noteManager;
 
-	private UserManager() {
+	public UserManager() {
 		userDao = DaoFactory.getInstance().getUserDao();
-		noteManager = ManagerFactory.getInstance().getNoteManager();
 	}
 
-	public static UserManager getInstance() {
-		return new UserManager();
-	}
-
-	public User authorisation(String login, String password) throws NullPointerException {
-		User tempUser = null;
+	public User authorisation(String login, String password) {
 		LOG.trace("Authorisation user with login = " + login);
-
+		User tempUser = null;
+		
 		try {
 			tempUser = userDao.find(login);
 		} catch (DaoException e) {
-			
+			LOG.warn("No user with login = " + login);
+			throw new AuthorisationException("No user with login = " + login);
 		}
-		if (tempUser == null) {
-			throw new AuthorisationException("No user with this login");
-		}
-
-		if (password == null || !password.equals(tempUser.getPassword())) {
+		
+		if (!password.equals(tempUser.getPassword())) {
 			LOG.warn("Wrong password");
 			throw new AuthorisationException("Wrong password");
 		}
-		noteManager.getAll(tempUser);
 		return tempUser;
 	}
 
 	public User createAccount(String login, String password) {
-		User user = userDao.create(login, password);
+		User user = null;
+
+		try {
+			user = userDao.create(login, password);
+		} catch (DaoException e) {
+			LOG.warn("Fail to create user", e);
+			throw new AuthorisationException("");
+		}
 		return user;
 	}
 
@@ -59,6 +59,10 @@ public class UserManager {
 	}
 
 	public void deleteUser(User user) {
-		userDao.delete(user);
+		try {
+			userDao.delete(user);
+		} catch (DaoException e) {
+			
+		}
 	}
 }

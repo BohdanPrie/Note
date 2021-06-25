@@ -22,6 +22,7 @@ public class DaoFactory {
 
 	public UserDao getUserDao() {
 		if(userDao == null) {
+			LOG.info("Creating UserDao");
 			userDao = new UserDao();
 		}
 		return userDao;
@@ -29,6 +30,7 @@ public class DaoFactory {
 	
 	public NoteDao getNoteDao() {
 		if(noteDao == null) {
+			LOG.info("Creating NoteDao");
 			noteDao = new NoteDao();
 		}
 		return noteDao;
@@ -36,6 +38,7 @@ public class DaoFactory {
 	
 	public static DaoFactory getInstance() {
 		if(daoFactory == null) {
+			LOG.info("Creating DaoFactory");
 			daoFactory = new DaoFactory();
 		}
 		return daoFactory;
@@ -56,7 +59,7 @@ public class DaoFactory {
 			LOG.error("Fail to create connection", e);
 			throw new DBException("Fail connection", e);
 		}
-		LOG.trace("Returning connection " + connection);
+		LOG.info("Returning connection " + connection);
 		return connection;
 	}
 }

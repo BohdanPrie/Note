@@ -1,4 +1,4 @@
-package ua.com.bohdanprie.notes.ui;
+package ua.com.bohdanprie.notes.ui.servlet;
 
 import java.io.IOException;
 
@@ -12,8 +12,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import ua.com.bohdanprie.notes.domain.ManagerFactory;
-import ua.com.bohdanprie.notes.domain.NoteManager;
-import ua.com.bohdanprie.notes.domain.User;
+import ua.com.bohdanprie.notes.domain.entities.User;
+import ua.com.bohdanprie.notes.domain.managers.NoteManager;
+import ua.com.bohdanprie.notes.ui.WebUtils;
 
 @WebServlet("/notes")
 public class Notes extends HttpServlet {
@@ -32,7 +33,8 @@ public class Notes extends HttpServlet {
 
 		if ("getAll".equals(request.getParameter("action"))) {
 			User user = ((User) request.getSession().getAttribute("user"));
-			String JSONNotes = noteManager.getAll(user);
+			String JSONNotes = null;
+			JSONNotes = noteManager.getAll(user);
 			WebUtils.loadJSON(response, JSONNotes);
 		} else {
 			WebUtils.loadResource("Notes.html", response);

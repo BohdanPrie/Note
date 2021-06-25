@@ -1,5 +1,8 @@
 package ua.com.bohdanprie.notes.domain;
 
+import ua.com.bohdanprie.notes.domain.managers.NoteManager;
+import ua.com.bohdanprie.notes.domain.managers.UserManager;
+
 public class ManagerFactory {
     private static ManagerFactory managerFactory;
     private UserManager userManager;
@@ -18,14 +21,14 @@ public class ManagerFactory {
 
     public UserManager getUserManager(){
     	if(userManager == null) {
-    		userManager = UserManager.getInstance();
+    		userManager = new UserManager();
     	}
         return userManager;
     }
 
     public NoteManager getNoteManager(){
     	if(noteManager == null) {
-        	noteManager = NoteManager.getInstance();
+        	noteManager = new NoteManager();
     	}
         return noteManager;
     }

@@ -8,9 +8,9 @@ import java.sql.Statement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.SQLException;
+import ua.com.bohdanprie.notes.domain.entities.User;
 
-import ua.com.bohdanprie.notes.domain.User;
+import java.sql.SQLException;
 
 public class UserDao {
 	private static final Logger LOG = LogManager.getLogger(UserDao.class.getName());
@@ -21,13 +21,11 @@ public class UserDao {
 		String SQL = "insert into notes.users (login, password) values (?, ?);";
 
 		User user = null;
-		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
-		try {
-			LOG.trace("Creating connection");
-			connection = daoFactory.getConnection();
+		LOG.trace("Creating connection");
+		try (Connection connection = daoFactory.getConnection()) {
 			try {
 				LOG.trace("Preparing statement");
 				statement = connection.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
@@ -49,21 +47,8 @@ public class UserDao {
 			}
 		} catch (DBException e) {
 			LOG.error("Fail to create connection", e);
-		} finally {
-			LOG.trace("Closing elements");
-			try {
-				if (connection != null) {
-					connection.close();
-				}
-				if (statement != null) {
-					statement.close();
-				}
-				if (resultSet != null) {
-					resultSet.close();
-				}
-			} catch (SQLException e) {
-				LOG.error("Fail at closing", e);
-			}
+		} catch (SQLException e) {
+			LOG.error("Fail at closing", e);
 		}
 		LOG.info("Returning created user");
 		return user;
@@ -75,12 +60,10 @@ public class UserDao {
 		String oldLogin = user.getLogin();
 		String SQL = "UPDATE notes.users SET login = ? WHERE login = ?;";
 
-		Connection connection = null;
 		PreparedStatement statement = null;
 
-		try {
-			LOG.trace("Creating connection");
-			connection = daoFactory.getConnection();
+		LOG.trace("Creating connection");
+		try (Connection connection = daoFactory.getConnection()) {
 			try {
 				LOG.trace("Preparing statement");
 				statement = connection.prepareStatement(SQL);
@@ -98,18 +81,8 @@ public class UserDao {
 			}
 		} catch (DBException e) {
 			LOG.error("Fail to create connection", e);
-		} finally {
-			LOG.trace("Closing elements");
-			try {
-				if (connection != null) {
-					connection.close();
-				}
-				if (statement != null) {
-					statement.close();
-				}
-			} catch (SQLException e) {
-				LOG.error("Fail at closing", e);
-			}
+		} catch (SQLException e) {
+			LOG.error("Fail at closing", e);
 		}
 		LOG.info("Login changed from " + user.getLogin() + " to " + newLogin);
 	}
@@ -120,12 +93,10 @@ public class UserDao {
 		String login = user.getLogin();
 		String SQL = "UPDATE notes.users SET password = ? WHERE login = ?;";
 		
-		Connection connection = null;
 		PreparedStatement statement = null;
 
-		try {
-			LOG.trace("Creating connection");
-			connection = daoFactory.getConnection();
+		LOG.trace("Creating connection");
+		try (Connection connection = daoFactory.getConnection()) {
 			try {
 				LOG.trace("Preparing statement");
 				statement = connection.prepareStatement(SQL);
@@ -133,7 +104,10 @@ public class UserDao {
 				statement.setString(2, login);
 				try {
 					LOG.trace("Executing SQL");
-					statement.execute();
+					int rowsAffected = statement.executeUpdate();
+					if(rowsAffected == 0) {
+						LOG.error("No such user exist");
+					}
 				} catch (SQLException e) {
 					LOG.warn("Fail to change password", e);
 					throw new DaoException("Fail to change password", e);
@@ -143,18 +117,8 @@ public class UserDao {
 			}
 		} catch (DBException e) {
 			LOG.error("Fail to create connection", e);
-		} finally {
-			LOG.trace("Closing elements");
-			try {
-				if (connection != null) {
-					connection.close();
-				}
-				if (statement != null) {
-					statement.close();
-				}
-			} catch (SQLException e) {
-				LOG.error("Fail at closing", e);
-			}
+		} catch (SQLException e) {
+			LOG.error("Fail at closing", e);
 		}
 		LOG.info("Password changed for user " + user.getLogin());
 	}
@@ -163,13 +127,10 @@ public class UserDao {
 		LOG.trace("Deleting user with login = " + user.getLogin());
 
 		String SQL = "DELETE FROM notes.users WHERE login = ?";
-		Connection connection = null;
 		PreparedStatement statement = null;
-		ResultSet resultSet = null;
 
-		try {
-			LOG.trace("Creating connection");
-			connection = daoFactory.getConnection();
+		LOG.trace("Creating connection");
+		try (Connection connection = daoFactory.getConnection()) {
 			try {
 				LOG.trace("Preparing statement");
 				statement = connection.prepareStatement(SQL);
@@ -186,21 +147,8 @@ public class UserDao {
 			}
 		} catch (DBException e) {
 			LOG.error("Fail to create connection", e);
-		} finally {
-			LOG.trace("Closing elements");
-			try {
-				if (connection != null) {
-					connection.close();
-				}
-				if (statement != null) {
-					statement.close();
-				}
-				if (resultSet != null) {
-					resultSet.close();
-				}
-			} catch (SQLException e) {
-				LOG.error("Fail at closing", e);
-			}
+		} catch (SQLException e) {
+			LOG.error("Fail at closing", e);
 		}
 		LOG.info("User with login = " + user.getLogin() + " deleted");
 	}
@@ -210,13 +158,11 @@ public class UserDao {
 		String SQL = "SELECT * FROM notes.users where login = ?;";
 
 		User user = null;
-		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 
-		try {
-			LOG.trace("Creating connection");
-			connection = daoFactory.getConnection();
+		LOG.trace("Creating connection");
+		try (Connection connection = daoFactory.getConnection()) {
 			try {
 				LOG.trace("Preparing statement");
 				statement = connection.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
@@ -235,21 +181,8 @@ public class UserDao {
 			}
 		} catch (DBException e) {
 			LOG.error("Fail to create connection", e);
-		} finally {
-			LOG.trace("Closing elements");
-			try {
-				if (connection != null) {
-					connection.close();
-				}
-				if (statement != null) {
-					statement.close();
-				}
-				if (resultSet != null) {
-					resultSet.close();
-				}
-			} catch (SQLException e) {
-				LOG.error("Fail at closing", e);
-			}
+		} catch (SQLException e) {
+			LOG.error("Fail at closing", e);
 		}
 		LOG.info("Returning user with login = " + user.getLogin());
 		return user;

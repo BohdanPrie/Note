@@ -1,4 +1,4 @@
-package ua.com.bohdanprie.notes.ui;
+package ua.com.bohdanprie.notes.ui.servlet;
 
 import java.io.IOException;
 
@@ -12,9 +12,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import ua.com.bohdanprie.notes.domain.ManagerFactory;
-import ua.com.bohdanprie.notes.domain.NoteManager;
-import ua.com.bohdanprie.notes.domain.User;
-import ua.com.bohdanprie.notes.domain.UserManager;
+import ua.com.bohdanprie.notes.domain.entities.User;
+import ua.com.bohdanprie.notes.domain.managers.NoteManager;
+import ua.com.bohdanprie.notes.domain.managers.UserManager;
+import ua.com.bohdanprie.notes.ui.WebUtils;
 
 @WebServlet("/reg")
 public class Registration extends HttpServlet {

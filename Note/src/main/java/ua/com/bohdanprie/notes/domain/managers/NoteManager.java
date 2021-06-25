@@ -1,4 +1,4 @@
-package ua.com.bohdanprie.notes.domain;
+package ua.com.bohdanprie.notes.domain.managers;
 
 import java.io.IOException;
 import java.util.Comparator;
@@ -11,16 +11,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ua.com.bohdanprie.notes.dao.DaoException;
 import ua.com.bohdanprie.notes.dao.DaoFactory;
 import ua.com.bohdanprie.notes.dao.NoteDao;
+import ua.com.bohdanprie.notes.domain.entities.Note;
+import ua.com.bohdanprie.notes.domain.entities.User;
 
 public class NoteManager {
 	private NoteDao noteDao;
 
-	private NoteManager() {
+	public NoteManager() {
 		noteDao = DaoFactory.getInstance().getNoteDao();
-	}
-
-	public static NoteManager getInstance() {
-		return new NoteManager();
 	}
 
 	public void changeNote(String JSONData, User user) {

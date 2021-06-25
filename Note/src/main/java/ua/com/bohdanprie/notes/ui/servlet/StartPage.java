@@ -1,4 +1,4 @@
-package ua.com.bohdanprie.notes.ui;
+package ua.com.bohdanprie.notes.ui.servlet;
 
 import java.io.IOException;
 
@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import ua.com.bohdanprie.notes.ui.WebUtils;
 
 @WebServlet("/main")
 public class StartPage extends HttpServlet {
