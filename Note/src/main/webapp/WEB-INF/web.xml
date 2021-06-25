@@ -4,7 +4,4 @@
 
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
-  <listener>
-  	<listener-class>ua.com.bohdanprie.notes.ui.listener.SessionEventListener</listener-class>
-  </listener>
 </web-app>
