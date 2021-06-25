@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 import ua.com.bohdanprie.notes.domain.ManagerFactory;
 import ua.com.bohdanprie.notes.domain.entities.User;
-import ua.com.bohdanprie.notes.domain.managers.NoteManager;
+import ua.com.bohdanprie.notes.domain.exceptions.AuthorisationException;
 import ua.com.bohdanprie.notes.domain.managers.UserManager;
 import ua.com.bohdanprie.notes.ui.WebUtils;
 
@@ -22,38 +22,34 @@ public class Registration extends HttpServlet {
 	private static final long serialVersionUID = -5450629669073582225L;
 	private static final Logger LOG = LogManager.getLogger(Registration.class.getName());
 	private UserManager userManager = null;
-	private NoteManager noteManager = null;
 
 	public Registration() {
 		super();
 		LOG.info("Servlet Registration initialized");
-		noteManager = ManagerFactory.getInstance().getNoteManager();
 		userManager = ManagerFactory.getInstance().getUserManager();
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		LOG.trace("Loading page Registration");
 		WebUtils.loadResource("Registration.html", response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+		LOG.trace("Post request");
 		String login = request.getParameter("login");
 		String password = request.getParameter("password");
 
 		try {
 			User user = userManager.createAccount(login, password);
-			noteManager.createNote(0, user);
-			noteManager.createNote(1, user);
-
-			request.getSession().setAttribute("user", user);
-			request.getSession().setAttribute("User-Agent", request.getHeader("User-Agent"));
 
 			response.setStatus(HttpServletResponse.SC_CREATED);
-		} catch (Exception e) {
+			request.getSession().setAttribute("user", user);
+			request.getSession().setAttribute("User-Agent", request.getHeader("User-Agent"));
+		} catch (AuthorisationException e) {
+			LOG.warn("User with login " + login + " already exist", e);
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			e.printStackTrace();
 		}
 	}
 }

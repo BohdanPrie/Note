@@ -3,7 +3,6 @@ package ua.com.bohdanprie.notes.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,7 +27,7 @@ public class UserDao {
 		try (Connection connection = daoFactory.getConnection()) {
 			try {
 				LOG.trace("Preparing statement");
-				statement = connection.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
+				statement = connection.prepareStatement(SQL);
 				statement.setString(1, login);
 				statement.setString(2, password);
 				try {
@@ -69,12 +68,12 @@ public class UserDao {
 				statement = connection.prepareStatement(SQL);
 				statement.setString(1, newLogin);
 				statement.setString(2, oldLogin);
-				try {
-					LOG.trace("Executing SQL");
-					statement.execute();
-				} catch (SQLException e) {
-					LOG.warn("Fail to change login", e);
-					throw new DaoException("Fail to change login", e);
+				LOG.trace("Executing SQL");
+				
+				int rowsAffected = statement.executeUpdate();
+				if (rowsAffected == 0) {
+					LOG.warn("Fail to change login");
+					throw new DaoException("Fail to change login");
 				}
 			} catch (SQLException e) {
 				LOG.error("Fail to prepare statement", e);
@@ -92,7 +91,7 @@ public class UserDao {
 
 		String login = user.getLogin();
 		String SQL = "UPDATE notes.users SET password = ? WHERE login = ?;";
-		
+
 		PreparedStatement statement = null;
 
 		LOG.trace("Creating connection");
@@ -102,15 +101,12 @@ public class UserDao {
 				statement = connection.prepareStatement(SQL);
 				statement.setString(1, newPassword);
 				statement.setString(2, login);
-				try {
-					LOG.trace("Executing SQL");
-					int rowsAffected = statement.executeUpdate();
-					if(rowsAffected == 0) {
-						LOG.error("No such user exist");
-					}
-				} catch (SQLException e) {
-					LOG.warn("Fail to change password", e);
-					throw new DaoException("Fail to change password", e);
+
+				LOG.trace("Executing SQL");
+				int rowsAffected = statement.executeUpdate();
+				if (rowsAffected == 0) {
+					LOG.warn("Fail to change password");
+					throw new DaoException("Fail to change password");
 				}
 			} catch (SQLException e) {
 				LOG.error("Fail to prepare statement", e);
@@ -135,12 +131,12 @@ public class UserDao {
 				LOG.trace("Preparing statement");
 				statement = connection.prepareStatement(SQL);
 				statement.setString(1, user.getLogin());
-				try {
-					LOG.trace("Executing SQL");
-					statement.execute();
-				} catch (SQLException e) {
-					LOG.warn("Fail to delete user", e);
-					throw new DaoException("Fail to delete user", e);
+
+				LOG.trace("Executing SQL");
+				int rowsAffected = statement.executeUpdate();
+				if (rowsAffected == 0) {
+					LOG.warn("Fail to delete user");
+					throw new DaoException("Fail to delete user");
 				}
 			} catch (SQLException e) {
 				LOG.error("Fail to prepare statement", e);
@@ -150,7 +146,7 @@ public class UserDao {
 		} catch (SQLException e) {
 			LOG.error("Fail at closing", e);
 		}
-		LOG.info("User with login = " + user.getLogin() + " deleted");
+		LOG.info("User with login = " + user.getLogin() + " was deleted");
 	}
 
 	public User find(String login) {
@@ -165,7 +161,7 @@ public class UserDao {
 		try (Connection connection = daoFactory.getConnection()) {
 			try {
 				LOG.trace("Preparing statement");
-				statement = connection.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
+				statement = connection.prepareStatement(SQL);
 				statement.setString(1, login);
 				try {
 					LOG.trace("Getting result set");

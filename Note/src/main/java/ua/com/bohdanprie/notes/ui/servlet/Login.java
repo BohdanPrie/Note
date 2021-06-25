@@ -3,6 +3,7 @@ package ua.com.bohdanprie.notes.ui.servlet;
 import ua.com.bohdanprie.notes.domain.ManagerFactory;
 import ua.com.bohdanprie.notes.domain.entities.User;
 import ua.com.bohdanprie.notes.domain.exceptions.AuthorisationException;
+import ua.com.bohdanprie.notes.domain.exceptions.NoSuchUserException;
 import ua.com.bohdanprie.notes.domain.managers.UserManager;
 import ua.com.bohdanprie.notes.ui.WebUtils;
 
@@ -45,13 +46,18 @@ public class Login extends HttpServlet {
 		try {
 			LOG.trace("Authorisation user with login = " + login);
 			User user = userManager.authorisation(login, password);
+			
+			response.setStatus(HttpServletResponse.SC_CREATED);
 			request.getSession().setAttribute("user", user);
 			request.getSession().setAttribute("User-Agent", request.getHeader("User-Agent"));
-			response.setStatus(HttpServletResponse.SC_CREATED);
 		} catch (AuthorisationException e) {
-			LOG.warn("Authorisation user with login = " + login + " failed", e);
+			LOG.warn("Wrong password for user with login = " + login, e);
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			response.getWriter().write(e.getMessage());
+			response.getWriter().write("Wrong password");
+		} catch (NoSuchUserException e) {
+			LOG.warn("No user with login = " + login, e);
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.getWriter().write("No user with login = " + login);
 		}
 	}
 }
