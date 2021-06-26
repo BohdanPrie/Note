@@ -26,19 +26,20 @@ public class Login extends HttpServlet {
 
 	public Login() {
 		super();
-		LOG.debug("Servlet Login initialized");
 		userManager = ManagerFactory.getInstance().getUserManager();
+		LOG.debug("Servlet Login initialized");
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		LOG.trace("Get request to Login");
 		LOG.trace("Loading page Login");
 		WebUtils.loadResource("Authorisation.html", response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		LOG.trace("Post request");
+		LOG.trace("Post request to Login");
 		
 		String login = request.getParameter("login");
 		String password = request.getParameter("password");
@@ -48,6 +49,7 @@ public class Login extends HttpServlet {
 			User user = userManager.authorisation(login, password);
 			
 			response.setStatus(HttpServletResponse.SC_CREATED);
+			LOG.info("Creating session for user " + user.getLogin());
 			request.getSession().setAttribute("user", user);
 			request.getSession().setAttribute("User-Agent", request.getHeader("User-Agent"));
 		} catch (AuthorisationException e) {

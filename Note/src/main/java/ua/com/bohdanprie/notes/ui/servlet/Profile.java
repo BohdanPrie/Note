@@ -26,8 +26,8 @@ public class Profile extends HttpServlet {
 
 	public Profile() {
 		super();
-		LOG.info("Servlet Profile initialized");
 		userManager = ManagerFactory.getInstance().getUserManager();
+		LOG.debug("Servlet Profile initialized");
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)

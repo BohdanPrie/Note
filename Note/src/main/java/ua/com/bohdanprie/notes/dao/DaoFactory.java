@@ -25,7 +25,7 @@ public class DaoFactory {
 	public UserDao getUserDao() {
 		if (userDao == null) {
 			userDao = new UserDao();
-			LOG.debug("UserDao was initialized");
+			LOG.debug("UserDao initialized");
 		}
 		return userDao;
 	}
@@ -33,7 +33,7 @@ public class DaoFactory {
 	public NoteDao getNoteDao() {
 		if (noteDao == null) {
 			noteDao = new NoteDao();
-			LOG.debug("NoteDao was initialized");
+			LOG.debug("NoteDao initialized");
 		}
 		return noteDao;
 	}
@@ -41,7 +41,7 @@ public class DaoFactory {
 	public static DaoFactory getInstance() {
 		if (daoFactory == null) {
 			daoFactory = new DaoFactory();
-			LOG.debug("DaoFactory was initialized");
+			LOG.debug("DaoFactory initialized");
 		}
 		return daoFactory;
 	}

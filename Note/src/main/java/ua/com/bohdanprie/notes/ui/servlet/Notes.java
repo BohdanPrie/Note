@@ -24,13 +24,13 @@ public class Notes extends HttpServlet {
 
 	public Notes() {
 		super();
-		LOG.info("Servlet Notes initialized");
 		noteManager = ManagerFactory.getInstance().getNoteManager();
+		LOG.debug("Servlet Notes initialized");
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		LOG.trace("")
+		LOG.trace("");
 		if ("getAll".equals(request.getParameter("action"))) {
 			User user = ((User) request.getSession().getAttribute("user"));
 			String JSONNotes = null;

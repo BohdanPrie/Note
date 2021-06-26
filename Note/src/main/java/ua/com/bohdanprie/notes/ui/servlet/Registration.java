@@ -25,19 +25,20 @@ public class Registration extends HttpServlet {
 
 	public Registration() {
 		super();
-		LOG.info("Servlet Registration initialized");
 		userManager = ManagerFactory.getInstance().getUserManager();
+		LOG.debug("Servlet Registration initialized");
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		LOG.trace("Get request to Registration");
 		LOG.trace("Loading page Registration");
 		WebUtils.loadResource("Registration.html", response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		LOG.trace("Post request");
+		LOG.trace("Post request to Registration");
 		String login = request.getParameter("login");
 		String password = request.getParameter("password");
 
