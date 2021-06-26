@@ -219,7 +219,6 @@ function validate() {
 						password.style.border = "3px solid #000";
 					}
 					addMessage('message_place', this.responseText, '#F50000');
-
 					iframe = window.top.document.getElementById('log').children[0];
 					iframe.style.height = '320px';
 				}
