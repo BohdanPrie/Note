@@ -185,36 +185,46 @@ function validate() {
 
 	var login = document.getElementById('login');
 	var password = document.getElementById('password');
-
+	iframe = window.top.document.getElementById('log').children[0];
+	
 	if (login.value != "") {
+		if (password.value.length < 8) {
+			iframe.style.height = '320px';
+			login.style.border = "3px solid #000";
+			addMessage('message_place', 'Length is less than 8 symbols',
+					'#F50000');
+			password.style.border = "3px solid #F50000";
+		} else {
+			let xhr = new XMLHttpRequest();
+			let url = "/login";
 
-		let xhr = new XMLHttpRequest();
-		let url = "/login";
+			xhr.open("POST", url + "?login=" + login.value + "&password="
+					+ password.value, true);
+			xhr.setRequestHeader("Content-Type", "text/text; charset=utf-8");
+			xhr.send(null);
 
-		xhr.open("POST", url + "?login=" + login.value + "&password=" + password.value, true);
-		xhr.setRequestHeader("Content-Type", "text/text; charset=utf-8");
-		xhr.send(null);
+			xhr.onreadystatechange = function() {
+				if (this.readyState != 4)
+					return;
 
-		xhr.onreadystatechange = function() {
-			if (this.readyState != 4)
-				return;
+				if (this.status == 201) {
+					window.top.location.href = "/main"
+				} else if (this.status == 401) {
+					if (this.responseText.toLowerCase().includes("password")) {
+						login.style.border = "3px solid #000";
+						password.style.border = "3px solid #F50000";
+					} else if (this.responseText.toLowerCase()
+							.includes("login")) {
+						login.style.border = "3px solid #F50000";
+						password.style.border = "3px solid #000";
+					}
+					addMessage('message_place', this.responseText, '#F50000');
 
-			if (this.status == 201) {
-				window.top.location.href = "/main"
-			} else if (this.status == 401) {
-				if (this.responseText.toLowerCase().includes("password")) {
-					login.style.border = "3px solid #000";
-					password.style.border = "3px solid #F50000";
-				} else if (this.responseText.toLowerCase().includes("login")) {
-					login.style.border = "3px solid #F50000";
-					password.style.border = "3px solid #000";
+					iframe = window.top.document.getElementById('log').children[0];
+					iframe.style.height = '320px';
 				}
-				addMessage('message_place', this.responseText, '#F50000');
-
-				iframe = window.top.document.getElementById('log').children[0];
-				iframe.style.height = '320px';
-			}
-		};
+			};
+		}
 	} else {
 		login.style.border = "3px solid #F50000";
 		iframe = window.top.document.getElementById('log').children[0];
@@ -264,8 +274,11 @@ function reg() {
 				password.style.border = "3px solid #000";
 				passwordConfirm.style.border = "3px solid #000";
 
-				xhr.open("POST", url + "?login=" + login.value + "&password=" + password.value, true);
-				xhr.setRequestHeader("Content-Type", "text/text; charset=utf-8");
+				xhr.open("POST", url + "?login=" + login.value + "&password="
+						+ password.value, true);
+				xhr
+						.setRequestHeader("Content-Type",
+								"text/text; charset=utf-8");
 				xhr.send(null);
 
 				xhr.onreadystatechange = function() {
@@ -276,7 +289,8 @@ function reg() {
 						window.top.location.href = "/main"
 					} else if (this.status == 401) {
 						login.style.border = "3px solid #F50000";
-						addMessage('message_place', 'Login already exist', '#F50000');
+						addMessage('message_place', 'Login already exist',
+								'#F50000');
 						iframe.style.height = '395px';
 					}
 				};
@@ -297,7 +311,9 @@ function changeLogin() {
 		let xhr = new XMLHttpRequest();
 		let url = "/profile";
 
-		xhr.open("POST", url + "?action=changeLogin&login=" + login.value, true);
+		xhr
+				.open("POST", url + "?action=changeLogin&login=" + login.value,
+						true);
 		xhr.setRequestHeader("Content-Type", "text/text; charset=utf-8");
 		xhr.send(null);
 
@@ -387,6 +403,7 @@ function exit() {
 	let url = "/profile";
 
 	xhr.open("POST", url + "?action=exit", true);
+	xhr.setRequestHeader("Content-Type", "text/text; charset=utf-8");
 	xhr.send(null);
 
 	xhr.onreadystatechange = function() {
@@ -407,6 +424,7 @@ function getAllNotes() {
 	let url = "/notes";
 
 	xhr.open("GET", url + "?action=getAll", true);
+	xhr.setRequestHeader("Content-Type", "text/text; charset=utf-8");
 	xhr.send(null);
 
 	xhr.onreadystatechange = function() {
@@ -521,18 +539,18 @@ function getWidth() {
 		return document.body.clientWidth;
 	}
 
-	  if (self.innerWidth) {
-	    return self.innerWidth;
-	  }
-
-	  if (document.documentElement && document.documentElement.clientWidth) {
-	    return document.documentElement.clientWidth;
-	  }
-
-	  if (document.body) {
-	    return document.body.clientWidth;
-	  }
+	if (self.innerWidth) {
+		return self.innerWidth;
 	}
+
+	if (document.documentElement && document.documentElement.clientWidth) {
+		return document.documentElement.clientWidth;
+	}
+
+	if (document.body) {
+		return document.body.clientWidth;
+	}
+}
 
 function changeStyleForScreen() {
 	var filterBtns = document.getElementById('filterBtns');
