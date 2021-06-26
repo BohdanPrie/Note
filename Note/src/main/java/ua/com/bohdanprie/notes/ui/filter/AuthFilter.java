@@ -44,15 +44,15 @@ public class AuthFilter implements Filter {
 		String UserAgent = request.getHeader("User-Agent");
 		
 		if (session == null || !UserAgent.equals(session.getAttribute("User-Agent"))) {
-			LOG.trace("User is not authorised");
 			if ("profile".equals(page) || "notes".equals(page)) {
+				LOG.trace("User is trying to access private pages");
 				LOG.trace("Sending redirect to main page");
 				response.sendRedirect("/main");
 				return;
 			}
 		} else {
-			LOG.trace("User is authorised");
 			if("login".equals(page) || "registration".equals(page)) {
+				LOG.trace("User is already authorised");
 				LOG.trace("Sending redirect to main page");
 				response.sendRedirect("/main");
 				return;
@@ -64,6 +64,7 @@ public class AuthFilter implements Filter {
 			WebUtils.loadResource(page, response);
 			return;
 		}
+		LOG.trace("Continuing performing filters");
 		chain.doFilter(requestFilter, responseFilter);
 	}
 

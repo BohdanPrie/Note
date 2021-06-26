@@ -34,7 +34,7 @@ public class NoteManager {
 			note = mapper.readValue(JSONData, Note.class);
 			noteDao.changeNote(note, user);
 		} catch (IOException e) {
-			LOG.warn("Fail to convert JSON to note");
+			LOG.warn("Fail to convert JSON to note", e);
 		} catch (DaoException e) {
 			LOG.warn("Fail to change note", e);
 		}

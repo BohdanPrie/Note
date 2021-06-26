@@ -30,7 +30,7 @@ public class UserManager {
 		} catch (DaoException e) {
 			LOG.error("Fail to find user " + login, e);
 		} catch (IllegalArgumentException e) {
-			LOG.warn("No user " + login, e);
+			LOG.warn("No user " + login);
 			throw new NoSuchUserException(e);
 		}
 
@@ -67,7 +67,7 @@ public class UserManager {
 			LOG.warn("User  " + user.getLogin() + " already exist", e);
 			throw new AuthorisationException("User " + user.getLogin() + " already exist", e);
 		} catch (IllegalArgumentException e) {
-			LOG.warn("No user " + user.getLogin(), e);
+			LOG.warn("No user " + user.getLogin());
 			throw new NoSuchUserException(e);
 		}
 		user.changeLogin(newLogin);
@@ -81,7 +81,7 @@ public class UserManager {
 		} catch (DaoException e) {
 			LOG.error("Fail to change password at user " + user.getLogin());
 		} catch (IllegalArgumentException e) {
-			LOG.warn("No user " + user.getLogin(), e);
+			LOG.warn("No user " + user.getLogin());
 			throw new NoSuchUserException(e);
 		}
 		user.changePassword(newPassword);
@@ -95,7 +95,7 @@ public class UserManager {
 		} catch (DaoException e) {
 			LOG.error("Fail to delete user " + user.getLogin());
 		} catch (IllegalArgumentException e) {
-			LOG.warn("No user " + user.getLogin(), e);
+			LOG.warn("No user " + user.getLogin());
 			throw new NoSuchUserException(e);
 		}
 		LOG.info("User " + user.getLogin() + " was deleted");

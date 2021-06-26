@@ -47,6 +47,7 @@ public class Profile extends HttpServlet {
 		User user = (User) request.getSession().getAttribute("user");
 
 		if ("exit".equals(action)) {
+			LOG.info("Invalidating session for user " + user.getLogin());
 			request.getSession().invalidate();
 		}
 
@@ -67,6 +68,8 @@ public class Profile extends HttpServlet {
 				request.getSession().invalidate();
 			}
 		} catch (NoSuchUserException e) {
+			LOG.warn("Current user was not found");
+			LOG.info("Invalidating session for user " + user.getLogin());
 			request.getSession().invalidate();
 		}
 	}
