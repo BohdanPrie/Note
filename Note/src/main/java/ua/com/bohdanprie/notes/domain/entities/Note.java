@@ -3,9 +3,6 @@ package ua.com.bohdanprie.notes.domain.entities;
 import java.util.Date;
 import java.util.Objects;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Note {
