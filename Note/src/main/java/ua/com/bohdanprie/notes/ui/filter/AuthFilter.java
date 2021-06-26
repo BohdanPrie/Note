@@ -64,7 +64,7 @@ public class AuthFilter implements Filter {
 			WebUtils.loadResource(page, response);
 			return;
 		}
-		LOG.trace("Continuing performing filters");
+		LOG.trace("Continue performing filters");
 		chain.doFilter(requestFilter, responseFilter);
 	}
 

@@ -1,5 +1,6 @@
 package ua.com.bohdanprie.notes.dao;
 
+import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,18 +30,19 @@ public class UserDao {
 		try (Connection connection = daoFactory.getConnection()) {
 			try {
 				LOG.trace("Preparing statement");
-				statement = connection.prepareStatement(SQL);
+				statement = connection.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
 				statement.setString(1, login);
 				statement.setString(2, password);
-				
+				statement.execute();
 				LOG.trace("Getting result set");
-				resultSet = statement.executeQuery();
+				resultSet = statement.getGeneratedKeys();
 				if (resultSet.next()) {
+					LOG.trace("Creating user " + login);
 					user = new User(resultSet.getString("login"), resultSet.getString("password"));
 				}
 			} catch (SQLException e) {
-				LOG.warn("User " + login + " not found", e);
-				throw new DaoException("User " + login + " not found", e);
+				LOG.warn("User " + login + " was not created", e);
+				throw new DaoException("User " + login + " was not created", e);
 			}
 		} catch (DBException e) {
 			LOG.error("Fail to create connection", e);
