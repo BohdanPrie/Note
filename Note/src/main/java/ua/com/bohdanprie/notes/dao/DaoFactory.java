@@ -10,6 +10,8 @@ import javax.sql.DataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import ua.com.bohdanprie.notes.dao.exceptions.DBException;
+
 public class DaoFactory {
 	private static final Logger LOG = LogManager.getLogger(DaoFactory.class.getName());
 	private static DaoFactory daoFactory;
@@ -22,24 +24,24 @@ public class DaoFactory {
 
 	public UserDao getUserDao() {
 		if (userDao == null) {
-			LOG.info("Creating UserDao");
 			userDao = new UserDao();
+			LOG.debug("UserDao was initialized");
 		}
 		return userDao;
 	}
 
 	public NoteDao getNoteDao() {
 		if (noteDao == null) {
-			LOG.info("Creating NoteDao");
 			noteDao = new NoteDao();
+			LOG.debug("NoteDao was initialized");
 		}
 		return noteDao;
 	}
 
 	public static DaoFactory getInstance() {
 		if (daoFactory == null) {
-			LOG.info("Creating DaoFactory");
 			daoFactory = new DaoFactory();
+			LOG.debug("DaoFactory was initialized");
 		}
 		return daoFactory;
 	}
@@ -54,7 +56,7 @@ public class DaoFactory {
 			source = (DataSource) context.lookup("java:comp/env/jdbc/Notes");
 			connection = source.getConnection();
 		} catch (NamingException e) {
-			LOG.error("Fail ", e);
+			LOG.error("Fail lookup", e);
 			throw new DBException("Fail lookup" , e);
 		} catch (SQLException e) {
 			LOG.error("Fail to create connection", e);

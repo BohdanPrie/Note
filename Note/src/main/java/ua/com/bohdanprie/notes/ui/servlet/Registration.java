@@ -42,6 +42,7 @@ public class Registration extends HttpServlet {
 		String password = request.getParameter("password");
 
 		try {
+			LOG.trace("Creating user with login = " + login);
 			User user = userManager.createAccount(login, password);
 
 			response.setStatus(HttpServletResponse.SC_CREATED);

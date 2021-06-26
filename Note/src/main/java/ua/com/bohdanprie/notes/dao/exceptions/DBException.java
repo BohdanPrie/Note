@@ -1,4 +1,4 @@
-package ua.com.bohdanprie.notes.dao;
+package ua.com.bohdanprie.notes.dao.exceptions;
 
 public class DBException extends RuntimeException {
 

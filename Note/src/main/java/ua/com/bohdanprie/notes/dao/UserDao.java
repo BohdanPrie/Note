@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import ua.com.bohdanprie.notes.dao.exceptions.DBException;
+import ua.com.bohdanprie.notes.dao.exceptions.DaoException;
 import ua.com.bohdanprie.notes.domain.entities.User;
 
 import java.sql.SQLException;
@@ -16,8 +18,8 @@ public class UserDao {
 	private DaoFactory daoFactory = DaoFactory.getInstance();
 
 	public User create(String login, String password) {
-		LOG.trace("Creating user with login = " + login);
-		String SQL = "insert into notes.users (login, password) values (?, ?);";
+		LOG.trace("Creating user " + login);
+		String SQL = "INSERT INTO notes.users (login, password) VALUES (?, ?);";
 
 		User user = null;
 		PreparedStatement statement = null;
@@ -30,31 +32,27 @@ public class UserDao {
 				statement = connection.prepareStatement(SQL);
 				statement.setString(1, login);
 				statement.setString(2, password);
-				try {
-					LOG.trace("Getting result set");
-					resultSet = statement.executeQuery();
-					if (resultSet.next()) {
-						LOG.trace("Creating user to return");
-						user = new User(resultSet.getString("login"), resultSet.getString("password"));
-					}
-				} catch (SQLException e) {
-					LOG.warn("Fail to create user", e);
-					throw new DaoException("Fail to create user", e);
+				
+				LOG.trace("Getting result set");
+				resultSet = statement.executeQuery();
+				if (resultSet.next()) {
+					user = new User(resultSet.getString("login"), resultSet.getString("password"));
 				}
 			} catch (SQLException e) {
-				LOG.error("Fail to prepare statement", e);
+				LOG.warn("User " + login + " not found", e);
+				throw new DaoException("User " + login + " not found", e);
 			}
 		} catch (DBException e) {
 			LOG.error("Fail to create connection", e);
 		} catch (SQLException e) {
 			LOG.error("Fail at closing", e);
 		}
-		LOG.info("Returning created user");
+		LOG.info("Returning created user " + user.getLogin());
 		return user;
 	}
 
 	public void changeLogin(User user, String newLogin) {
-		LOG.trace("Changing login for user with login = " + user.getLogin());
+		LOG.trace("Changing login for user " + user.getLogin());
 
 		String oldLogin = user.getLogin();
 		String SQL = "UPDATE notes.users SET login = ? WHERE login = ?;";
@@ -68,15 +66,16 @@ public class UserDao {
 				statement = connection.prepareStatement(SQL);
 				statement.setString(1, newLogin);
 				statement.setString(2, oldLogin);
+
 				LOG.trace("Executing SQL");
-				
 				int rowsAffected = statement.executeUpdate();
 				if (rowsAffected == 0) {
 					LOG.warn("Fail to change login");
-					throw new DaoException("Fail to change login");
+					throw new IllegalArgumentException("Fail to change login");
 				}
 			} catch (SQLException e) {
-				LOG.error("Fail to prepare statement", e);
+				LOG.warn("Fail to change login", e);
+				throw new DaoException("Fail to change login", e);
 			}
 		} catch (DBException e) {
 			LOG.error("Fail to create connection", e);
@@ -87,7 +86,7 @@ public class UserDao {
 	}
 
 	public void changePassword(User user, String newPassword) {
-		LOG.trace("Changing password for user with login = " + user.getLogin());
+		LOG.trace("Changing password for user " + user.getLogin());
 
 		String login = user.getLogin();
 		String SQL = "UPDATE notes.users SET password = ? WHERE login = ?;";
@@ -106,10 +105,11 @@ public class UserDao {
 				int rowsAffected = statement.executeUpdate();
 				if (rowsAffected == 0) {
 					LOG.warn("Fail to change password");
-					throw new DaoException("Fail to change password");
+					throw new IllegalArgumentException("Fail to change password");
 				}
 			} catch (SQLException e) {
-				LOG.error("Fail to prepare statement", e);
+				LOG.warn("Fail to change password");
+				throw new DaoException("Fail to change password");
 			}
 		} catch (DBException e) {
 			LOG.error("Fail to create connection", e);
@@ -120,7 +120,7 @@ public class UserDao {
 	}
 
 	public void delete(User user) {
-		LOG.trace("Deleting user with login = " + user.getLogin());
+		LOG.trace("Deleting user " + user.getLogin());
 
 		String SQL = "DELETE FROM notes.users WHERE login = ?";
 		PreparedStatement statement = null;
@@ -136,22 +136,23 @@ public class UserDao {
 				int rowsAffected = statement.executeUpdate();
 				if (rowsAffected == 0) {
 					LOG.warn("Fail to delete user");
-					throw new DaoException("Fail to delete user");
+					throw new IllegalArgumentException("Fail to delete user");
 				}
 			} catch (SQLException e) {
-				LOG.error("Fail to prepare statement", e);
+				LOG.warn("Fail to delete user");
+				throw new DaoException("Fail to delete user");
 			}
 		} catch (DBException e) {
 			LOG.error("Fail to create connection", e);
 		} catch (SQLException e) {
 			LOG.error("Fail at closing", e);
 		}
-		LOG.info("User with login = " + user.getLogin() + " was deleted");
+		LOG.info("User " + user.getLogin() + " was deleted");
 	}
 
 	public User find(String login) {
-		LOG.trace("Authorisation user with login = " + login);
-		String SQL = "SELECT * FROM notes.users where login = ?;";
+		LOG.trace("Authorisation user " + login);
+		String SQL = "SELECT * FROM notes.users WHERE login = ?;";
 
 		User user = null;
 		PreparedStatement statement = null;
@@ -163,24 +164,27 @@ public class UserDao {
 				LOG.trace("Preparing statement");
 				statement = connection.prepareStatement(SQL);
 				statement.setString(1, login);
-				try {
-					LOG.trace("Getting result set");
-					resultSet = statement.executeQuery();
-					if (resultSet.next()) {
-						user = new User(resultSet.getString("login"), resultSet.getString("password"));
-					}
-				} catch (SQLException e) {
-					LOG.warn("User with login = " + login + " not found");
+
+				LOG.trace("Getting result set");
+				resultSet = statement.executeQuery();
+				if (resultSet.next()) {
+					user = new User(resultSet.getString("login"), resultSet.getString("password"));
 				}
 			} catch (SQLException e) {
-				LOG.error("Fail to prepare statement", e);
+				LOG.warn("User " + login + " not found", e);
+				throw new DaoException("User " + login + " not found", e);
+			}
+
+			if (user == null) {
+				LOG.warn("User " + login + " not found");
+				throw new IllegalArgumentException("User " + login + " not found");
 			}
 		} catch (DBException e) {
 			LOG.error("Fail to create connection", e);
 		} catch (SQLException e) {
 			LOG.error("Fail at closing", e);
 		}
-		LOG.info("Returning user with login = " + user.getLogin());
+		LOG.info("Returning created user " + user.getLogin());
 		return user;
 	}
 }

@@ -34,6 +34,9 @@ public class User {
     }
 
     public void changePassword(String password) {
+    	if(password == null || password.isEmpty()) {
+    		
+    	}
         this.password = password;
     }
 }

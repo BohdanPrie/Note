@@ -30,7 +30,7 @@ public class Notes extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+		LOG.trace("")
 		if ("getAll".equals(request.getParameter("action"))) {
 			User user = ((User) request.getSession().getAttribute("user"));
 			String JSONNotes = null;
@@ -63,7 +63,7 @@ public class Notes extends HttpServlet {
 		} else if ("save".equals(action)) {
 			noteManager.changeNote(WebUtils.readData(request), user);
 		} else if ("sByDateCreation".equals(action)) {
-			String JSONNotes = noteManager.sortByTimeCreation(user);
+			String JSONNotes = noteManager.getSortedByCreation(user);
 			WebUtils.loadJSON(response, JSONNotes);
 		} else if ("deleteAllNotes".equals(action)) {
 			noteManager.deleteAll(user);

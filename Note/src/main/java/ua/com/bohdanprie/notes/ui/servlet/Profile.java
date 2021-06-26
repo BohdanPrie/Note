@@ -2,6 +2,7 @@ package ua.com.bohdanprie.notes.ui.servlet;
 
 import ua.com.bohdanprie.notes.domain.ManagerFactory;
 import ua.com.bohdanprie.notes.domain.entities.User;
+import ua.com.bohdanprie.notes.domain.exceptions.AuthorisationException;
 import ua.com.bohdanprie.notes.domain.exceptions.NoSuchUserException;
 import ua.com.bohdanprie.notes.domain.managers.UserManager;
 import ua.com.bohdanprie.notes.ui.WebUtils;
@@ -52,7 +53,12 @@ public class Profile extends HttpServlet {
 		try {
 			if ("changeLogin".equals(action)) {
 				String newLogin = request.getParameter("login");
-				userManager.changeLogin(newLogin, user); // if login exist set status to SC_FORBIDDEN (exception throws here)
+				try {
+					userManager.changeLogin(newLogin, user);
+				} catch (AuthorisationException e) {
+					LOG.warn("User " + newLogin + " already exist", e);
+					response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+				}
 			} else if ("changePassword".equals(action)) {
 				String password = request.getParameter("password");
 				userManager.changePassword(user, password);

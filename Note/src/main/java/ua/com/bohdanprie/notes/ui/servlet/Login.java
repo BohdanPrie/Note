@@ -26,7 +26,7 @@ public class Login extends HttpServlet {
 
 	public Login() {
 		super();
-		LOG.info("Servlet Login initialized");
+		LOG.debug("Servlet Login initialized");
 		userManager = ManagerFactory.getInstance().getUserManager();
 	}
 
@@ -57,7 +57,7 @@ public class Login extends HttpServlet {
 		} catch (NoSuchUserException e) {
 			LOG.warn("No user with login = " + login, e);
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			response.getWriter().write("No user with login = " + login);
+			response.getWriter().write("No user with this login");
 		}
 	}
 }

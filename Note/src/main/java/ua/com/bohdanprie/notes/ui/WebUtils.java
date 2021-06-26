@@ -19,11 +19,12 @@ public class WebUtils {
 		} else if (resource.endsWith(".js")) {
 			file = new File("src/main/webapp/js/" + resource);
 		}
-		response.getWriter().append(trimResourse(file));
+		String trimmedResource  = trimResourse(file);
+		response.getWriter().append(trimmedResource);
 	}
 	
 	public static String trimResourse(File file) throws IOException {
-		StringBuilder response = new StringBuilder();
+		StringBuffer response = new StringBuffer();
 
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		String line = reader.readLine();
