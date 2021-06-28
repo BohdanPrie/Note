@@ -5,10 +5,8 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class Note {
+public class Note extends AbstractText{
     private String title;
-    private String body;
-    private int id;
     
     @JsonIgnore
     private Date timeCreation;
@@ -19,8 +17,8 @@ public class Note {
     public Note(String title, String body, int id) {
     	this();
     	this.title = title;
-    	this.body = body;
-    	this.id = id;
+    	changeBody(body);
+    	setId(id);
     }
     
     public Note() {
@@ -43,29 +41,13 @@ public class Note {
 	public void setTimeCreation(Date timeCreation) {
 		this.timeCreation = timeCreation;
 	}
-    
-    public int getId() {
-        return id;
-    }
 
     public String getTitle() {
         return title;
     }
 
-    public String getBody() {
-        return body;
-    }
-
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     @Override
@@ -73,11 +55,11 @@ public class Note {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Note note = (Note) o;
-        return id == note.id && Objects.equals(title, note.title) && Objects.equals(body, note.body);
+        return getId() == note.getId() && Objects.equals(title, note.title) && Objects.equals(getBody(), note.getBody());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, body, id);
+        return Objects.hash(title, getBody(), getId());
     }
 }

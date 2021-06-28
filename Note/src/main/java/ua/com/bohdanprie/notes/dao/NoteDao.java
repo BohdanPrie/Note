@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
@@ -20,7 +19,7 @@ public class NoteDao {
 	private DaoFactory daoFactory = DaoFactory.getInstance();
 	private static final Logger LOG = LogManager.getLogger(NoteDao.class.getName());
 
-	public void changeNote(Note note, User user) {
+	public void change(Note note, User user) {
 		LOG.trace("Changing note of user with login = " + user.getLogin());
 		String SQL = "UPDATE notes.notes SET title = ?, body = ?, time_change = ? where user_login = ? AND id = ?";
 
@@ -78,7 +77,7 @@ public class NoteDao {
 		LOG.info("All notes were deleted from user " + user.getLogin());
 	}
 
-	public void deleteNote(int id, User user) {
+	public void delete(int id, User user) {
 		LOG.trace("Deleting note from user " + user.getLogin());
 		String SQL = "DELETE FROM notes.notes WHERE user_login = ? AND id = ?;";
 
@@ -106,7 +105,7 @@ public class NoteDao {
 		LOG.info("Note was deleted from user " + user.getLogin());
 	}
 
-	public Note createNote(int id, User user) {
+	public Note create(int id, User user) {
 		LOG.trace("Creating new note for user " + user.getLogin());
 		String SQL = "INSERT INTO notes.notes (user_login, title, body, id, time_creation, time_change) VALUES (?, 'Title', 'Note', ?, ?, ?);";
 
@@ -180,7 +179,7 @@ public class NoteDao {
 		return notes;
 	}
 
-	public ArrayList<Note> getAllNotes(User user) {
+	public ArrayList<Note> getAll(User user) {
 		LOG.trace("Getting all notes from user " + user.getLogin());
 		ArrayList<Note> notes = new ArrayList<>();
 
@@ -193,7 +192,7 @@ public class NoteDao {
 		try (Connection connection = daoFactory.getConnection()) {
 			try {
 				LOG.trace("Preparing statement");
-				statement = connection.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
+				statement = connection.prepareStatement(SQL);
 				statement.setString(1, user.getLogin());
 
 				LOG.trace("Getting result set");

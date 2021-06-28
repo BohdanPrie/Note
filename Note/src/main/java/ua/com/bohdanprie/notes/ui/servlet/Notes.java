@@ -11,31 +11,29 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ua.com.bohdanprie.notes.domain.ManagerFactory;
 import ua.com.bohdanprie.notes.domain.entities.User;
-import ua.com.bohdanprie.notes.domain.managers.NoteManager;
+import ua.com.bohdanprie.notes.domain.managers.TextManager;
 import ua.com.bohdanprie.notes.ui.WebUtils;
 
 @WebServlet("/notes")
 public class Notes extends HttpServlet {
 	private static final long serialVersionUID = -1614888115806476030L;
 	private static final Logger LOG = LogManager.getLogger(Notes.class.getName());
-	private NoteManager noteManager = null;
-
+	
 	public Notes() {
 		super();
-		noteManager = ManagerFactory.getInstance().getNoteManager();
 		LOG.debug("Servlet Notes initialized");
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		LOG.trace("");
+		TextManager manager = WebUtils.getTextManager(request);
+		
 		if ("getAll".equals(request.getParameter("action"))) {
 			User user = ((User) request.getSession().getAttribute("user"));
-			String JSONNotes = null;
-			JSONNotes = noteManager.getAll(user);
-			WebUtils.loadJSON(response, JSONNotes);
+			String JSON = null;
+			JSON = manager.getAll(user);
+			WebUtils.loadJSON(response, JSON);
 		} else {
 			WebUtils.loadResource("Notes.html", response);
 		}
@@ -43,30 +41,31 @@ public class Notes extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+		TextManager manager = WebUtils.getTextManager(request);
+		
 		String action = request.getParameter("action");
 		String search = request.getParameter("q");
 		
 		User user = ((User) request.getSession().getAttribute("user"));
 
 		if (search != null) {
-			String JSONNotes = noteManager.searchByPattern(user, search);
+			String JSONNotes = manager.searchByPattern(user, search);
 			WebUtils.loadJSON(response, JSONNotes);
 		}
 
 		if ("create".equals(action)) {
 			int maxId = Integer.parseInt(request.getParameter("maxId"));
-			noteManager.createNote(maxId, user);
+			manager.create(maxId, user);
 		} else if ("delete".equals(action)) {
 			int id = Integer.parseInt(request.getParameter("id"));
-			noteManager.deleteNote(id, user);
+			manager.delete(id, user);
 		} else if ("save".equals(action)) {
-			noteManager.changeNote(WebUtils.readData(request), user);
+			manager.change(WebUtils.readData(request), user);
 		} else if ("sByDateCreation".equals(action)) {
-			String JSONNotes = noteManager.getSortedByCreation(user);
-			WebUtils.loadJSON(response, JSONNotes);
+			String JSON = manager.getSortedByCreation(user);
+			WebUtils.loadJSON(response, JSON);
 		} else if ("deleteAllNotes".equals(action)) {
-			noteManager.deleteAll(user);
+			manager.deleteAll(user);
 		}
 	}
 }

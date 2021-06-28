@@ -45,7 +45,8 @@ function setCorrectHeightToTextContainer() {
 }
 
 function addNote() {
-
+	var need = 'note'; /* for toDo reconfigure parameter */
+	
 	if (document.getElementById('notes-container').childElementCount == 0) {
 		setCorrectHeightToTextContainer();
 	}
@@ -56,7 +57,7 @@ function addNote() {
 	let xhr = new XMLHttpRequest();
 	let url = "/notes";
 
-	xhr.open("POST", url + "?action=create&maxId=" + maxId, true);
+	xhr.open("POST", url + "?action=create&maxId=" + maxId + "&need=" + need, true);
 	xhr.send(null);
 }
 
@@ -67,6 +68,7 @@ function setText(obj) {
 }
 
 function saveNote() {
+	var need = 'note'; /* for toDo reconfigure parameter */
 	var title = removeAllTags(document.getElementById('titleText').value);
 	var body = removeAllTags(document.getElementById('noteText').value);
 
@@ -86,7 +88,7 @@ function saveNote() {
 	let xhr = new XMLHttpRequest();
 	let url = "/notes";
 
-	xhr.open("POST", url + "?action=save", true);
+	xhr.open("POST", url + "?action=save&need=" + need, true);
 	xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
 	xhr.send(json);
 
@@ -97,10 +99,11 @@ function saveNote() {
 }
 
 function deleteAllNotes() {
+	var need = 'note'; /* for toDo reconfigure parameter */
 	let xhr = new XMLHttpRequest();
 	let url = "/notes";
 
-	xhr.open("POST", url + "?action=deleteAllNotes", true);
+	xhr.open("POST", url + "?action=deleteAllNotes&need=" + need, true);
 	xhr.send(null);
 
 	xhr.onreadystatechange = function() {
@@ -154,6 +157,7 @@ function deleteAccount() {
 
 function deleteNote() {
 
+	var need = 'note'; /* for toDo reconfigure parameter */
 	var noteId = currentNote.id;
 
 	document.getElementById('notes-container').removeChild(currentNote);
@@ -177,7 +181,7 @@ function deleteNote() {
 	let xhr = new XMLHttpRequest();
 	let url = "/notes";
 
-	xhr.open("POST", url + "?action=delete&id=" + noteId, true);
+	xhr.open("POST", url + "?action=delete&id=" + noteId + "&need=" + need, true);
 	xhr.send(null);
 }
 
@@ -186,7 +190,7 @@ function validate() {
 	var login = document.getElementById('login');
 	var password = document.getElementById('password');
 	iframe = window.top.document.getElementById('log').children[0];
-	
+
 	if (login.value != "") {
 		if (password.value.length < 8) {
 			iframe.style.height = '320px';
@@ -210,15 +214,17 @@ function validate() {
 				if (this.status == 201) {
 					window.top.location.href = "/main"
 				} else if (this.status == 401) {
-					if (this.responseText.toLowerCase().includes("password")) {
-						login.style.border = "3px solid #000";
-						password.style.border = "3px solid #F50000";
-					} else if (this.responseText.toLowerCase()
-							.includes("login")) {
-						login.style.border = "3px solid #F50000";
-						password.style.border = "3px solid #000";
-					}
-					addMessage('message_place', this.responseText, '#F50000');
+					login.style.border = "3px solid #000";
+					password.style.border = "3px solid #F50000";
+					
+					addMessage('message_place', 'Wrong password', '#F50000');
+					iframe = window.top.document.getElementById('log').children[0];
+					iframe.style.height = '320px';
+				} else if (this.status == 404) {
+					login.style.border = "3px solid #F50000";
+					password.style.border = "3px solid #000";
+					
+					addMessage('message_place', 'No user with this login', '#F50000');
 					iframe = window.top.document.getElementById('log').children[0];
 					iframe.style.height = '320px';
 				}
@@ -416,13 +422,13 @@ function exit() {
 }
 
 function getAllNotes() {
-
+	var need = 'note'; /* for toDo reconfigure parameter */
 	var JsonNotes;
 
 	let xhr = new XMLHttpRequest();
 	let url = "/notes";
 
-	xhr.open("GET", url + "?action=getAll", true);
+	xhr.open("GET", url + "?action=getAll&need=" + need, true);
 	xhr.setRequestHeader("Content-Type", "text/text; charset=utf-8");
 	xhr.send(null);
 
@@ -446,14 +452,14 @@ function getAllNotes() {
 
 function searchByPattern() {
 	var JsonNotes;
-
+	var need = 'note'; /* for toDo reconfigure parameter */
 	var pattern = document.getElementById('q').value;
 
 	if (pattern != "") {
 
 		let xhr = new XMLHttpRequest();
 		let url = "/notes?";
-		xhr.open("POST", url + "q=" + decodeURIComponent(pattern), true);
+		xhr.open("POST", url + "q=" + decodeURIComponent(pattern) + "&need=" + need, true);
 		xhr.setRequestHeader("Content-Type", "text/text; charset=utf-8");
 		xhr.send(pattern);
 
@@ -481,13 +487,13 @@ function searchByPattern() {
 }
 
 function sortByDateCreation() {
-
+	var need = 'note'; /* for toDo reconfigure parameter */
 	var JsonNotes;
 
 	let xhr = new XMLHttpRequest();
 	let url = "/notes";
 
-	xhr.open("POST", url + "?action=sByDateCreation", true);
+	xhr.open("POST", url + "?action=sByDateCreation&need=" + need, true);
 	xhr.send(null);
 
 	xhr.onreadystatechange = function() {

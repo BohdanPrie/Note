@@ -1,12 +1,5 @@
 package ua.com.bohdanprie.notes.ui.servlet;
 
-import ua.com.bohdanprie.notes.domain.ManagerFactory;
-import ua.com.bohdanprie.notes.domain.entities.User;
-import ua.com.bohdanprie.notes.domain.exceptions.AuthorisationException;
-import ua.com.bohdanprie.notes.domain.exceptions.NoSuchUserException;
-import ua.com.bohdanprie.notes.domain.managers.UserManager;
-import ua.com.bohdanprie.notes.ui.WebUtils;
-
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -18,15 +11,19 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import ua.com.bohdanprie.notes.domain.entities.User;
+import ua.com.bohdanprie.notes.domain.exceptions.AuthorisationException;
+import ua.com.bohdanprie.notes.domain.exceptions.NoSuchUserException;
+import ua.com.bohdanprie.notes.domain.managers.UserManager;
+import ua.com.bohdanprie.notes.ui.WebUtils;
+
 @WebServlet("/login")
 public class Login extends HttpServlet {
 	private static final long serialVersionUID = -5979986946771364505L;
 	private static final Logger LOG = LogManager.getLogger(Login.class.getName());
-	private UserManager userManager = null;
 
 	public Login() {
 		super();
-		userManager = ManagerFactory.getInstance().getUserManager();
 		LOG.debug("Servlet Login initialized");
 	}
 
@@ -39,6 +36,7 @@ public class Login extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		UserManager userManager = WebUtils.getUserManager();
 		LOG.trace("Post request to Login");
 		
 		String login = request.getParameter("login");
@@ -55,11 +53,9 @@ public class Login extends HttpServlet {
 		} catch (AuthorisationException e) {
 			LOG.warn("Wrong password for user with login = " + login, e);
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			response.getWriter().write("Wrong password");
 		} catch (NoSuchUserException e) {
 			LOG.warn("No user with login = " + login, e);
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			response.getWriter().write("No user with this login");
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		}
 	}
 }

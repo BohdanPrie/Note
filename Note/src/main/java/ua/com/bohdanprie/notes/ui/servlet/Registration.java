@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ua.com.bohdanprie.notes.domain.ManagerFactory;
 import ua.com.bohdanprie.notes.domain.entities.User;
 import ua.com.bohdanprie.notes.domain.exceptions.AuthorisationException;
 import ua.com.bohdanprie.notes.domain.managers.UserManager;
@@ -21,11 +20,9 @@ import ua.com.bohdanprie.notes.ui.WebUtils;
 public class Registration extends HttpServlet {
 	private static final long serialVersionUID = -5450629669073582225L;
 	private static final Logger LOG = LogManager.getLogger(Registration.class.getName());
-	private UserManager userManager = null;
 
 	public Registration() {
 		super();
-		userManager = ManagerFactory.getInstance().getUserManager();
 		LOG.debug("Servlet Registration initialized");
 	}
 
@@ -38,6 +35,7 @@ public class Registration extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		UserManager userManager = WebUtils.getUserManager();
 		LOG.trace("Post request to Registration");
 		String login = request.getParameter("login");
 		String password = request.getParameter("password");

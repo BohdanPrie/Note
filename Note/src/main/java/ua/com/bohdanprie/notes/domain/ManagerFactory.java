@@ -3,17 +3,20 @@ package ua.com.bohdanprie.notes.domain;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ua.com.bohdanprie.notes.domain.managers.NoteManager;
 import ua.com.bohdanprie.notes.domain.managers.UserManager;
+import ua.com.bohdanprie.notes.domain.managers.managersImpl.NoteManager;
+import ua.com.bohdanprie.notes.domain.managers.managersImpl.ToDoLineManager;
+import ua.com.bohdanprie.notes.domain.managers.managersImpl.UserManagerImpl;
 
 public class ManagerFactory {
 	private static final Logger LOG = LogManager.getLogger(ManagerFactory.class.getName());
     private static ManagerFactory managerFactory;
     private UserManager userManager;
     private NoteManager noteManager;
+    private ToDoLineManager toDoLineManager;
 
-    private ManagerFactory() {
-    	
+	private ManagerFactory() {
+		
     }
     
     public static ManagerFactory getInstance() {
@@ -26,7 +29,7 @@ public class ManagerFactory {
 
     public UserManager getUserManager(){
     	if(userManager == null) {
-    		userManager = new UserManager();
+    		userManager = new UserManagerImpl();
     		LOG.debug("UserManager initialized");
     	}
         return userManager;
@@ -34,9 +37,17 @@ public class ManagerFactory {
 
     public NoteManager getNoteManager(){
     	if(noteManager == null) {
-        	noteManager = new NoteManager();
-        	LOG.debug("NoteManager initialized");
+    		noteManager = new NoteManager();
+    		LOG.debug("NoteManager initialized");
     	}
         return noteManager;
+    }
+    
+    public ToDoLineManager getToDoLineManager() {
+    	if(toDoLineManager == null) {
+    		toDoLineManager = new ToDoLineManager();
+    		LOG.debug("ToDoLineManager initialized");
+    	}
+    	return toDoLineManager;
     }
 }

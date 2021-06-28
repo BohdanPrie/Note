@@ -435,23 +435,12 @@ body {
 }
 
 .formNote {
-<<<<<<< HEAD
-<<<<<<< HEAD
 	margin-bottom: 5%;
 	font-size: 20px;
 	border: none;
-	height: 76%;
-=======
-	font-size: 20px;
-	border: none;
-	height: 80%;
->>>>>>> 3de4aacdff43db2cef94f151e2dafd10d4c68e4e
-=======
-	font-size: 20px;
-	border: none;
-	height: 80%;
->>>>>>> refs/remotes/origin/second
-	padding: 0px 15px;
+	padding-left: 10px;
+	/*height: 80%;
+	padding: 0px 15px;*/
 }
 
 .formNote:focus {

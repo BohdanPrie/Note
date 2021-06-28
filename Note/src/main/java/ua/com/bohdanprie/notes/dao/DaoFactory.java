@@ -17,11 +17,35 @@ public class DaoFactory {
 	private static DaoFactory daoFactory;
 	private UserDao userDao;
 	private NoteDao noteDao;
+	private ToDoLineDao toDoLineDao;
+	private DataSource source;
 
 	private DaoFactory() {
-
+		try {
+			InitialContext context = new InitialContext();
+			source = (DataSource) context.lookup("java:comp/env/jdbc/Notes");
+		} catch (NamingException e) {
+			LOG.error("Fail lookup", e);
+			throw new DBException("Fail lookup", e);
+		}
+	}
+	
+	public static DaoFactory getInstance() {
+		if (daoFactory == null) {
+			daoFactory = new DaoFactory();
+			LOG.debug("DaoFactory initialized");
+		}
+		return daoFactory;
 	}
 
+	public ToDoLineDao getToDoLineDao() {
+		if (toDoLineDao == null) {
+			toDoLineDao = new ToDoLineDao();
+			LOG.debug("ToDoLineDao initialized");
+		}
+		return toDoLineDao;
+	}
+	
 	public UserDao getUserDao() {
 		if (userDao == null) {
 			userDao = new UserDao();
@@ -29,6 +53,7 @@ public class DaoFactory {
 		}
 		return userDao;
 	}
+
 
 	public NoteDao getNoteDao() {
 		if (noteDao == null) {
@@ -38,26 +63,11 @@ public class DaoFactory {
 		return noteDao;
 	}
 
-	public static DaoFactory getInstance() {
-		if (daoFactory == null) {
-			daoFactory = new DaoFactory();
-			LOG.debug("DaoFactory initialized");
-		}
-		return daoFactory;
-	}
-
 	public Connection getConnection() {
 		LOG.trace("Creating connection");
-		InitialContext context = null;
-		Connection connection = null;
-		DataSource source = null;
+		Connection connection;
 		try {
-			context = new InitialContext();
-			source = (DataSource) context.lookup("java:comp/env/jdbc/Notes");
 			connection = source.getConnection();
-		} catch (NamingException e) {
-			LOG.error("Fail lookup", e);
-			throw new DBException("Fail lookup" , e);
 		} catch (SQLException e) {
 			LOG.error("Fail to create connection", e);
 			throw new DBException("Fail connection", e);

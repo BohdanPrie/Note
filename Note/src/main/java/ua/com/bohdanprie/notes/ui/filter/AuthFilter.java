@@ -9,7 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -37,21 +36,21 @@ public class AuthFilter implements Filter {
 		HttpServletRequest request = (HttpServletRequest) requestFilter;
 		HttpServletResponse response = (HttpServletResponse) responseFilter;
 
-		String[] path = request.getRequestURI().split("/");
-		String page = path[path.length - 1];
-
+		String requestURI = request.getRequestURI();
+		String page = requestURI.substring(requestURI.lastIndexOf("/"));
+		
 		HttpSession session = request.getSession(false);
 		String UserAgent = request.getHeader("User-Agent");
-		
+				
 		if (session == null || !UserAgent.equals(session.getAttribute("User-Agent"))) {
-			if ("profile".equals(page) || "notes".equals(page)) {
+			if ("/profile".equals(page) || "/notes".equals(page)) {
 				LOG.trace("User is trying to access private pages");
 				LOG.trace("Sending redirect to main page");
 				response.sendRedirect("/main");
 				return;
 			}
 		} else {
-			if("login".equals(page) || "registration".equals(page)) {
+			if("/login".equals(page) || "/reg".equals(page)) {
 				LOG.trace("User is already authorised");
 				LOG.trace("Sending redirect to main page");
 				response.sendRedirect("/main");
