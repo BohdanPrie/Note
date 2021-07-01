@@ -21,9 +21,11 @@ import ua.com.bohdanprie.notes.ui.WebUtils;
 public class Login extends HttpServlet {
 	private static final long serialVersionUID = -5979986946771364505L;
 	private static final Logger LOG = LogManager.getLogger(Login.class.getName());
+	private UserManager userManager;
 
 	public Login() {
 		super();
+		userManager = WebUtils.getUserManager();
 		LOG.debug("Servlet Login initialized");
 	}
 
@@ -36,7 +38,6 @@ public class Login extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		UserManager userManager = WebUtils.getUserManager();
 		LOG.trace("Post request to Login");
 		
 		String login = request.getParameter("login");
@@ -45,7 +46,6 @@ public class Login extends HttpServlet {
 		try {
 			LOG.trace("Authorisation user with login = " + login);
 			User user = userManager.authorisation(login, password);
-			
 			response.setStatus(HttpServletResponse.SC_CREATED);
 			LOG.info("Creating session for user " + user.getLogin());
 			request.getSession().setAttribute("user", user);

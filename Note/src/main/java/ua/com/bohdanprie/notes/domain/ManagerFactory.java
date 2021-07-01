@@ -8,7 +8,7 @@ import ua.com.bohdanprie.notes.domain.managers.managersImpl.NoteManager;
 import ua.com.bohdanprie.notes.domain.managers.managersImpl.ToDoLineManager;
 import ua.com.bohdanprie.notes.domain.managers.managersImpl.UserManagerImpl;
 
-public class ManagerFactory {
+public final class ManagerFactory {
 	private static final Logger LOG = LogManager.getLogger(ManagerFactory.class.getName());
     private static ManagerFactory managerFactory;
     private UserManager userManager;

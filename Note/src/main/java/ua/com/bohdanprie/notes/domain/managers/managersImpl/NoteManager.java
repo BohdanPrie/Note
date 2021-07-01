@@ -1,19 +1,17 @@
 package ua.com.bohdanprie.notes.domain.managers.managersImpl;
 
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ua.com.bohdanprie.notes.dao.DaoFactory;
-import ua.com.bohdanprie.notes.dao.NoteDao;
+import ua.com.bohdanprie.notes.dao.entitiesDao.NoteDao;
 import ua.com.bohdanprie.notes.dao.exceptions.DaoException;
+import ua.com.bohdanprie.notes.domain.ManagerUtils;
 import ua.com.bohdanprie.notes.domain.entities.Note;
 import ua.com.bohdanprie.notes.domain.entities.User;
 import ua.com.bohdanprie.notes.domain.managers.TextManager;
@@ -81,10 +79,10 @@ public class NoteManager implements TextManager {
 		} catch (DaoException e) {
 			LOG.warn("Fail to get all notes", e);
 		}
-		notes = sortByLastChange(notes);
+		notes = ManagerUtils.sortByLastChange(notes);
 		user.setNotes(notes);
 		LOG.info("Returning notes");
-		return notesToJSON(notes);
+		return ManagerUtils.toJSON(notes);
 	}
 	
 	@Override
@@ -96,10 +94,10 @@ public class NoteManager implements TextManager {
 		} catch (DaoException e) {
 			LOG.warn("Fail to get all notes", e);
 		}
-		notes = sortByTimeCreation(notes);
+		notes = ManagerUtils.sortByTimeCreation(notes);
 		user.setNotes(notes);
 		LOG.info("Returning notes");
-		return notesToJSON(notes);
+		return ManagerUtils.toJSON(notes);
 	}
 	
 	@Override
@@ -113,32 +111,6 @@ public class NoteManager implements TextManager {
 		}
 		user.setNotes(notes);
 		LOG.info("Returning notes");
-		return notesToJSON(notes);
-	}
-
-	private List<Note> sortByLastChange(List<Note> notes) {
-		LOG.trace("Sorting notes by last change");
-		return notes.stream().sorted(Comparator.comparing(note -> note.getTimeChange().getTime()))
-				.collect(Collectors.toList());
-	}
-
-	private List<Note> sortByTimeCreation(List<Note> notes) {
-		LOG.trace("Sorting notes by time creation");
-		return notes.stream().sorted(Comparator.comparing(note -> note.getTimeCreation().getTime()))
-				.collect(Collectors.toList());
-	}
-
-	public String notesToJSON(List<Note> notes) {
-		LOG.trace("Converting notes to JSON Object");
-		String JSON = null;
-
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			JSON = mapper.writeValueAsString(notes);
-		} catch (JsonProcessingException e) {
-			LOG.error("Fail to convert notes to JSON", e);
-		}
-		LOG.info("Returning converted to JSON notes");
-		return JSON;
+		return ManagerUtils.toJSON(notes);
 	}
 }

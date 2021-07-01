@@ -1,4 +1,4 @@
-package ua.com.bohdanprie.notes.dao;
+package ua.com.bohdanprie.notes.dao.entitiesDao;
 
 import java.sql.Statement;
 import java.sql.Connection;
@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import ua.com.bohdanprie.notes.dao.DaoFactory;
 import ua.com.bohdanprie.notes.dao.exceptions.DBException;
 import ua.com.bohdanprie.notes.dao.exceptions.DaoException;
 import ua.com.bohdanprie.notes.domain.entities.User;

@@ -10,13 +10,18 @@ import javax.sql.DataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import ua.com.bohdanprie.notes.dao.entitiesDao.NoteDao;
+import ua.com.bohdanprie.notes.dao.entitiesDao.ToDoDao;
+import ua.com.bohdanprie.notes.dao.entitiesDao.ToDoLineDao;
+import ua.com.bohdanprie.notes.dao.entitiesDao.UserDao;
 import ua.com.bohdanprie.notes.dao.exceptions.DBException;
 
-public class DaoFactory {
+public final class DaoFactory {
 	private static final Logger LOG = LogManager.getLogger(DaoFactory.class.getName());
 	private static DaoFactory daoFactory;
 	private UserDao userDao;
 	private NoteDao noteDao;
+	private ToDoDao toDoDao;
 	private ToDoLineDao toDoLineDao;
 	private DataSource source;
 
@@ -37,6 +42,14 @@ public class DaoFactory {
 		}
 		return daoFactory;
 	}
+	
+	public ToDoDao getToDoDao() {
+		if(toDoDao == null) {
+			toDoDao = new ToDoDao();
+			LOG.debug("ToDoDao initialized");
+		}
+		return toDoDao;
+	}
 
 	public ToDoLineDao getToDoLineDao() {
 		if (toDoLineDao == null) {
@@ -53,7 +66,6 @@ public class DaoFactory {
 		}
 		return userDao;
 	}
-
 
 	public NoteDao getNoteDao() {
 		if (noteDao == null) {

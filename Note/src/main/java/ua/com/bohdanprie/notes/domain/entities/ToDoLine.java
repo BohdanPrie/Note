@@ -1,47 +1,25 @@
 package ua.com.bohdanprie.notes.domain.entities;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-public class ToDoLine {
+public class ToDoLine extends AbstractText{
 	private static final Logger LOG = LogManager.getLogger(ToDoLine.class.getName());
-	@JsonIgnore
-	private Date timeCreation;
-
-	@JsonIgnore
-	private Date timeChange;
-
-	private int id;
 	
 	private List<ToDo> toDo;
 
-	public int getId() {
-		return id;
+	public ToDoLine(String title) {
+		this();
+		changeTitle(title);
 	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public Date getTimeChange() {
-		return timeChange;
-	}
-
-	public void setTimeChange(Date timeChange) {
-		this.timeChange = timeChange;
-	}
-
-	public Date getTimeCreation() {
-		return timeCreation;
-	}
-
-	public void setTimeCreation(Date timeCreation) {
-		this.timeCreation = timeCreation;
+	
+	public ToDoLine() {
+		super();
+		toDo = new ArrayList<>();		
 	}
 
 	public List<ToDo> getToDo() {
@@ -54,5 +32,18 @@ public class ToDoLine {
 		} else {
 			this.toDo = toDo;
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(toDo, super.hashCode());
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj) return true;
+		if (obj == null || (getClass() != obj.getClass())) return false;
+		ToDoLine toDoLine = (ToDoLine) obj;
+		return super.equals(toDoLine) && toDo.equals(toDoLine.toDo);
 	}
 }

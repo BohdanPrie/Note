@@ -1,4 +1,4 @@
-package ua.com.bohdanprie.notes.dao;
+package ua.com.bohdanprie.notes.dao.entitiesDao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,18 +10,24 @@ import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import ua.com.bohdanprie.notes.dao.DaoFactory;
+import ua.com.bohdanprie.notes.dao.DaoUtils;
 import ua.com.bohdanprie.notes.dao.exceptions.DBException;
 import ua.com.bohdanprie.notes.dao.exceptions.DaoException;
 import ua.com.bohdanprie.notes.domain.entities.Note;
 import ua.com.bohdanprie.notes.domain.entities.User;
 
 public class NoteDao {
-	private DaoFactory daoFactory = DaoFactory.getInstance();
+	private DaoFactory daoFactory;
 	private static final Logger LOG = LogManager.getLogger(NoteDao.class.getName());
 
+	public NoteDao() {
+		daoFactory = DaoFactory.getInstance();
+	}
+
 	public void change(Note note, User user) {
-		LOG.trace("Changing note of user with login = " + user.getLogin());
-		String SQL = "UPDATE notes.notes SET title = ?, body = ?, time_change = ? where user_login = ? AND id = ?";
+		LOG.trace("Changing note of user " + user.getLogin());
+		String SQL = "UPDATE notes.notes SET title = ?, body = ?, time_change = ? where user_login = ? AND id = ?;";
 
 		PreparedStatement statement = null;
 
@@ -52,7 +58,7 @@ public class NoteDao {
 
 	public void deleteAll(User user) {
 		LOG.trace("Deleting all notes from user " + user.getLogin());
-		String SQL = "DELETE FROM notes.notes WHERE user_login = ?";
+		String SQL = "DELETE FROM notes.notes WHERE user_login = ?;";
 
 		PreparedStatement statement = null;
 
@@ -106,12 +112,14 @@ public class NoteDao {
 	}
 
 	public Note create(int id, User user) {
+		StringBuffer SQLInsert = new StringBuffer("INSERT INTO notes.notes (user_login, title, body, id, time_creation, time_change) VALUES ");
 		LOG.trace("Creating new note for user " + user.getLogin());
-		String SQL = "INSERT INTO notes.notes (user_login, title, body, id, time_creation, time_change) VALUES (?, 'Title', 'Note', ?, ?, ?);";
+		String SQL = SQLInsert.append(DaoUtils.buildInsertValuesQuery(1, 6)).append(";").toString();
 
-		Note note = new Note("Title", "Body", id);
+		Note note = null;
 
 		PreparedStatement statement = null;
+		ResultSet resultSet = null;
 
 		LOG.trace("Creating connection");
 		try (Connection connection = daoFactory.getConnection()) {
@@ -119,12 +127,20 @@ public class NoteDao {
 				LOG.trace("Preparing statement");
 				statement = connection.prepareStatement(SQL);
 				statement.setString(1, user.getLogin());
-				statement.setInt(2, id);
-				statement.setTimestamp(3, new Timestamp(note.getTimeCreation().getTime()));
-				statement.setTimestamp(4, new Timestamp(note.getTimeChange().getTime()));
+				statement.setString(2, "Title");
+				statement.setString(3, "Body");
+				statement.setInt(4, id);
+				statement.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
+				statement.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
 
 				LOG.trace("Executing SQL");
-				statement.execute();
+				resultSet = statement.executeQuery();
+				LOG.trace("Getting result set");
+				if (resultSet.next()) {
+					note = new Note(resultSet.getString("title"), resultSet.getString("body"), resultSet.getInt("id"));
+					note.setTimeCreation(resultSet.getTimestamp("time_creation"));
+					note.setTimeChange(resultSet.getTimestamp("time_change"));
+				}
 			} catch (SQLException e) {
 				LOG.warn("Fail to create note at user " + user.getLogin(), e);
 				throw new DaoException("Fail to create note at user " + user.getLogin());
@@ -159,8 +175,7 @@ public class NoteDao {
 				LOG.trace("Getting result set");
 				resultSet = statement.executeQuery();
 				while (resultSet.next()) {
-					Note note = new Note(resultSet.getString("title"), 
-							resultSet.getString("body"),
+					Note note = new Note(resultSet.getString("title"), resultSet.getString("body"),
 							resultSet.getInt("id"));
 					note.setTimeCreation(resultSet.getTimestamp("time_creation"));
 					note.setTimeChange(resultSet.getTimestamp("time_change"));
@@ -198,8 +213,7 @@ public class NoteDao {
 				LOG.trace("Getting result set");
 				resultSet = statement.executeQuery();
 				while (resultSet.next()) {
-					Note note = new Note(resultSet.getString("title"), 
-							resultSet.getString("body"),
+					Note note = new Note(resultSet.getString("title"), resultSet.getString("body"),
 							resultSet.getInt("id"));
 					note.setTimeChange(resultSet.getTimestamp("time_change"));
 					note.setTimeCreation(resultSet.getTimestamp("time_creation"));

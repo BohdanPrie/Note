@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import ua.com.bohdanprie.notes.dao.DaoFactory;
-import ua.com.bohdanprie.notes.dao.UserDao;
+import ua.com.bohdanprie.notes.dao.entitiesDao.UserDao;
 import ua.com.bohdanprie.notes.dao.exceptions.DaoException;
 import ua.com.bohdanprie.notes.domain.ManagerFactory;
 import ua.com.bohdanprie.notes.domain.entities.User;
@@ -15,9 +15,11 @@ import ua.com.bohdanprie.notes.domain.managers.UserManager;
 public class UserManagerImpl implements UserManager{
 	private static final Logger LOG = LogManager.getLogger(UserManagerImpl.class.getName());
 	private NoteManager noteManager;
+	private ToDoLineManager toDoLineManager;
 	private UserDao userDao;
 
 	public UserManagerImpl() {
+		toDoLineManager = ManagerFactory.getInstance().getToDoLineManager();
 		noteManager = ManagerFactory.getInstance().getNoteManager();
 		userDao = DaoFactory.getInstance().getUserDao();
 	}
@@ -56,9 +58,7 @@ public class UserManagerImpl implements UserManager{
 			throw new AuthorisationException("User " + login + " already exist", e);
 		}
 		LOG.info("User " + login + " was created");
-		LOG.trace("Creating two notes for new user " + login);
-		noteManager.create(0, user);
-		noteManager.create(1, user);
+		createForNewUser(user);
 		return user;
 	}
 
@@ -105,5 +105,15 @@ public class UserManagerImpl implements UserManager{
 			throw new NoSuchUserException(e);
 		}
 		LOG.info("User " + user.getLogin() + " was deleted");
+	}
+	
+	
+	private void createForNewUser(User user) {
+		for(int id = 0; id < 2; id++) {
+			LOG.trace("Creating note for user " + user.getLogin());
+			noteManager.create(id, user);
+			LOG.trace("Creating toDoLine for user " + user.getLogin());
+			toDoLineManager.create(id, user);
+		}
 	}
 }

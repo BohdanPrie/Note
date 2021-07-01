@@ -15,7 +15,7 @@ import ua.com.bohdanprie.notes.domain.ManagerFactory;
 import ua.com.bohdanprie.notes.domain.managers.TextManager;
 import ua.com.bohdanprie.notes.domain.managers.UserManager;
 
-public class WebUtils {
+public final class WebUtils {
 	private static final Logger LOG = LogManager.getLogger(WebUtils.class.getName());
 	
 	public static void loadResource(String resource, HttpServletResponse response) throws IOException {
