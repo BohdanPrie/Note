@@ -18,16 +18,22 @@ import org.apache.logging.log4j.Logger;
 
 import ua.com.bohdanprie.notes.ui.WebUtils;
 
-@WebFilter("/*")
+@WebFilter(filterName = "AuthFilter")
 public class AuthFilter implements Filter {
+	@Override
+	public void init(FilterConfig filterConfig) throws ServletException {
+
+	}
+
+	@Override
+	public void destroy() {
+
+	}
+
 	private static final Logger LOG = LogManager.getLogger(AuthFilter.class.getName());
 
 	public AuthFilter() {
 		LOG.debug("AuthFilter initialized");
-	}
-
-	public void destroy() {
-
 	}
 
 	public void doFilter(ServletRequest requestFilter, ServletResponse responseFilter, FilterChain chain)
@@ -36,8 +42,7 @@ public class AuthFilter implements Filter {
 		HttpServletRequest request = (HttpServletRequest) requestFilter;
 		HttpServletResponse response = (HttpServletResponse) responseFilter;
 
-		String requestURI = request.getRequestURI();
-		String page = requestURI.substring(requestURI.lastIndexOf("/"));
+		String page = WebUtils.getRequestedPath(request);
 		
 		HttpSession session = request.getSession(false);
 		String UserAgent = request.getHeader("User-Agent");
@@ -57,17 +62,7 @@ public class AuthFilter implements Filter {
 				return;
 			}
 		}
-		
-		if(page.endsWith(".css") || page.endsWith(".js")) {
-			LOG.trace("Loading resource " + page);
-			WebUtils.loadResource(page, response);
-			return;
-		}
 		LOG.trace("Continue performing filters");
 		chain.doFilter(requestFilter, responseFilter);
-	}
-
-	public void init(FilterConfig fConfig) throws ServletException {
-
 	}
 }
