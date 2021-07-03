@@ -1,5 +1,7 @@
-var currentNote;
+var currentObj;
 var maxId = -1;
+var maxInnerId = -1;
+var currentToDo;
 
 function changeDisplay(id, action) {
 	var element = document.getElementById(id);
@@ -44,66 +46,160 @@ function setCorrectHeightToTextContainer() {
 	text_container.style.height = heightToShow + "px";
 }
 
-function addNote() {
-	var need = 'note'; /* for toDo reconfigure parameter */
-	
+function add() {
 	if (document.getElementById('notes-container').childElementCount == 0) {
 		setCorrectHeightToTextContainer();
 	}
+
+	var url = window.location.pathname.split('/')[window.location.pathname
+			.split('/').length - 1];
+
 	maxId += 1;
 
-	addNoteToPage(maxId, 'Title', 'Note');
+	if (url == "notes") {
+		addNoteToPage(maxId, 'Title', 'Note');
+	} else if (url == "toDos") {
+		addToDoLineToPage(maxId, 'Title', null);
+	}
 
 	let xhr = new XMLHttpRequest();
-	let url = "/notes";
-
-	xhr.open("POST", url + "?action=create&maxId=" + maxId + "&need=" + need, true);
+	var url = window.location.pathname.split('/')[window.location.pathname
+			.split('/').length - 1];
+	xhr.open("POST", url + "?action=create&maxId=" + maxId, true);
 	xhr.send(null);
 }
 
+function setToDoToContainer(obj) {
+	maxInnerId = -1;
+	currentObj = obj;
+	document.getElementById('titleText').value = obj.children[0].children[0].children[0].textContent;
+	document.getElementById('format-container').children[2].innerHTML = '';
+	var lastContainer = obj.children[0].children[1];
+	var textRedactor = document.getElementById('noteText');
+	for (var i = 0; i < lastContainer.childElementCount; i++) {
+		var toDo = '';
+		var checked = '';
+		if (lastContainer.children[i].children[0].checked) {
+			checked = 'checked';
+		}
+		toDo += '<div onclick="setCurrentTask(this)"  id = "'
+				+ lastContainer.children[i].id
+				+ '"><input class="checkbox" type="checkbox" style="cursor: pointer;"'
+				+ checked
+				+ '><span class="formNote strikethrough" style="white-space: normal; width: 90%; display: inline-block; margin-bottom: 0%;" contenteditable>'
+				+ removeAllTags(lastContainer.children[i].children[1].textContent)
+				+ '</span></div>';
+		textRedactor.insertAdjacentHTML('beforeend', toDo);
+		if (parseInt(lastContainer.children[i].id) > maxInnerId) {
+			maxInnerId = parseInt(lastContainer.children[i].id);
+		}
+	}
+}
+
+function deleteTask() {
+	document.getElementById('noteText').removeChild(currentToDo);
+}
+
+function setCurrentTask(currentTask) {
+	currentToDo = currentTask;
+}
+
+function addNewToDo() {
+	if (currentObj != null) {
+		maxInnerId += 1;
+		document.getElementById('noteText').insertAdjacentHTML(
+						'beforeend',
+						'<div onclick="setCurrentTask(this)"  id = "'
+								+ maxInnerId
+								+ '"><input class="checkbox" type="checkbox"><span class="formNote span_width" style="white-space: normal; width: 90%; display: inline-block; margin-bottom: 0%;" contenteditable></span></div>');
+	}
+}
+
 function setText(obj) {
-	currentNote = obj;
+	currentObj = obj;
 	document.getElementById('titleText').value = obj.children[0].children[0].children[0].textContent;
 	document.getElementById('noteText').value = obj.children[0].children[1].textContent;
 }
 
-function saveNote() {
-	var need = 'note'; /* for toDo reconfigure parameter */
+function collectToDoLineData() {
+	var ToDoLineId = currentObj.id;
+	var containerToDo = document.getElementById('noteText');
+	var title = removeAllTags(document.getElementById('titleText').value);
+	
+	const toDo = collectToDoData();
+	var ToDoLine = {
+			'id' : ToDoLineId,
+			'title' : title,
+			'toDo' : toDo
+	};
+	return ToDoLine;
+}
+
+function collectToDoData() {
+	var containerToDo = document.getElementById('noteText');
+	
+	const toDo = [];
+	for(var i = 0; i < containerToDo.childElementCount; i++) {
+		var toDoElems = {
+			'id' : 	containerToDo.children[i].id,
+			'marked' : containerToDo.children[i].children[0].checked,
+			'body' : removeAllTags(containerToDo.children[i].children[1].textContent)
+		};
+		toDo[i] = toDoElems;
+	}
+	return toDo;
+}
+
+function collectNoteData() {
+	var noteId = currentObj.id;
 	var title = removeAllTags(document.getElementById('titleText').value);
 	var body = removeAllTags(document.getElementById('noteText').value);
-
-	currentNote.children[0].children[0].children[0].textContent = title;
-	currentNote.children[0].children[1].textContent = body;
-
-	var noteId = currentNote.id;
+	currentObj.children[0].children[0].children[0].textContent = title;
+	currentObj.children[0].children[1].textContent = body;
 
 	var note = {
 		'id' : noteId,
 		'title' : document.getElementById('titleText').value,
 		'body' : document.getElementById('noteText').value
 	};
+	return note;
+}
 
-	var json = JSON.stringify(note);
+function saveNote() {
+
+	var data;
+	var url = window.location.pathname.split('/')[window.location.pathname.split('/').length - 1];
+
+	if (url == "notes") {
+		data = collectNoteData();
+	} else if (url == "toDos") {
+		data = collectToDoLineData();
+	}
+
+	var json = JSON.stringify(data);
 
 	let xhr = new XMLHttpRequest();
-	let url = "/notes";
-
-	xhr.open("POST", url + "?action=save&need=" + need, true);
+	xhr.open("POST", url + "?action=save", true);
 	xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
 	xhr.send(json);
 
-	document.getElementById('notes-container').removeChild(currentNote);
+	document.getElementById('notes-container').removeChild(currentObj);
 
-	addNoteToPage(noteId, title, body);
-	currentNote = document.getElementById(noteId);
+	if (url == "notes") {
+		addNoteToPage(currentObj.id, title, body);
+	} else if (url == "toDos") {
+		addToDoLineToPage(currentObj.id, document.getElementById('titleText').value, collectToDoData());
+	}
+	
+	currentObj = document.getElementById(currentObj.id);
 }
 
 function deleteAllNotes() {
-	var need = 'note'; /* for toDo reconfigure parameter */
 	let xhr = new XMLHttpRequest();
-	let url = "/notes";
+	var url = window.location.pathname.split('/')[window.location.pathname
+			.split('/').length - 1];
 
-	xhr.open("POST", url + "?action=deleteAllNotes&need=" + need, true);
+	xhr.open("DELETE", url + "?action=deleteAllNotes", true);
 	xhr.send(null);
 
 	xhr.onreadystatechange = function() {
@@ -112,7 +208,7 @@ function deleteAllNotes() {
 
 		if (this.status == 200) {
 			changeDisplay('format-container', 'none');
-			window.location.href = "/notes"
+			window.location.href = url;
 		}
 	}
 }
@@ -139,7 +235,7 @@ function deleteAccount() {
 			let xhr = new XMLHttpRequest();
 			let url = "/profile";
 
-			xhr.open("POST", url + "?action=deleteUser", true);
+			xhr.open("DELETE", url, true);
 			xhr.send(null);
 
 			xhr.onreadystatechange = function() {
@@ -157,10 +253,9 @@ function deleteAccount() {
 
 function deleteNote() {
 
-	var need = 'note'; /* for toDo reconfigure parameter */
-	var noteId = currentNote.id;
+	var noteId = currentObj.id;
 
-	document.getElementById('notes-container').removeChild(currentNote);
+	document.getElementById('notes-container').removeChild(currentObj);
 	document.getElementById('titleText').value = "";
 	document.getElementById('noteText').value = "";
 
@@ -179,9 +274,10 @@ function deleteNote() {
 	maxId = maxCurrentId;
 
 	let xhr = new XMLHttpRequest();
-	let url = "/notes";
+	var url = window.location.pathname.split('/')[window.location.pathname
+			.split('/').length - 1];
 
-	xhr.open("POST", url + "?action=delete&id=" + noteId + "&need=" + need, true);
+	xhr.open("DELETE", url + "?id=" + noteId, true);
 	xhr.send(null);
 }
 
@@ -216,15 +312,16 @@ function validate() {
 				} else if (this.status == 401) {
 					login.style.border = "3px solid #000";
 					password.style.border = "3px solid #F50000";
-					
+
 					addMessage('message_place', 'Wrong password', '#F50000');
 					iframe = window.top.document.getElementById('log').children[0];
 					iframe.style.height = '320px';
 				} else if (this.status == 404) {
 					login.style.border = "3px solid #F50000";
 					password.style.border = "3px solid #000";
-					
-					addMessage('message_place', 'No user with this login', '#F50000');
+
+					addMessage('message_place', 'No user with this login',
+							'#F50000');
 					iframe = window.top.document.getElementById('log').children[0];
 					iframe.style.height = '320px';
 				}
@@ -316,9 +413,7 @@ function changeLogin() {
 		let xhr = new XMLHttpRequest();
 		let url = "/profile";
 
-		xhr
-				.open("POST", url + "?action=changeLogin&login=" + login.value,
-						true);
+		xhr.open("PUT", url + "?action=changeLogin&login=" + login.value, true);
 		xhr.setRequestHeader("Content-Type", "text/text; charset=utf-8");
 		xhr.send(null);
 
@@ -380,7 +475,7 @@ function changePassword() {
 					let xhr = new XMLHttpRequest();
 					let url = "/profile";
 
-					xhr.open("POST", url + "?action=changePassword&password="
+					xhr.open("PUT", url + "?action=changePassword&password="
 							+ newPassword.value, true);
 					xhr.send(null);
 
@@ -422,13 +517,13 @@ function exit() {
 }
 
 function getAllNotes() {
-	var need = 'note'; /* for toDo reconfigure parameter */
-	var JsonNotes;
+	var JsonElements;
 
 	let xhr = new XMLHttpRequest();
-	let url = "/notes";
+	var url = window.location.pathname.split('/')[window.location.pathname
+			.split('/').length - 1];
 
-	xhr.open("GET", url + "?action=getAll&need=" + need, true);
+	xhr.open("GET", url + "?action=getAll", true);
 	xhr.setRequestHeader("Content-Type", "text/text; charset=utf-8");
 	xhr.send(null);
 
@@ -437,29 +532,33 @@ function getAllNotes() {
 			return;
 
 		if (this.status == 200) {
-			JsonNotes = this.responseText;
+			JsonElements = this.responseText;
 		}
-		const Notes = JSON.parse(JsonNotes);
+		const Elements = JSON.parse(JsonElements);
 
-		if (Notes.length != 0) {
+		if (Elements.length != 0) {
 			document.getElementById('format-container').style.display = "flex";
 			setCorrectHeightToTextContainer();
 		}
 
-		showNotes(Notes);
+		if (url == "notes") {
+			showNotes(Elements);
+		} else if (url == "toDos") {
+			showToDoLines(Elements);
+		}
 	};
 }
 
 function searchByPattern() {
-	var JsonNotes;
-	var need = 'note'; /* for toDo reconfigure parameter */
+	var JsonElements;
 	var pattern = document.getElementById('q').value;
 
 	if (pattern != "") {
 
 		let xhr = new XMLHttpRequest();
-		let url = "/notes?";
-		xhr.open("POST", url + "q=" + decodeURIComponent(pattern) + "&need=" + need, true);
+		var url = window.location.pathname.split('/')[window.location.pathname
+				.split('/').length - 1];
+		xhr.open("POST", url + "?q=" + decodeURIComponent(pattern), true);
 		xhr.setRequestHeader("Content-Type", "text/text; charset=utf-8");
 		xhr.send(pattern);
 
@@ -468,11 +567,11 @@ function searchByPattern() {
 				return;
 
 			if (this.status == 200) {
-				JsonNotes = this.responseText;
+				JsonElements = this.responseText;
 			}
-			const Notes = JSON.parse(JsonNotes);
+			const Elements = JSON.parse(JsonElements);
 
-			if (Notes.length != 0) {
+			if (Elements.length != 0) {
 				changeDisplay('format-container', 'flex');
 				setCorrectHeightToTextContainer();
 			} else {
@@ -481,19 +580,23 @@ function searchByPattern() {
 			document.getElementById('notes-container').innerHTML = '';
 			document.getElementById('titleText').value = "";
 			document.getElementById('noteText').value = "";
-			showNotes(Notes);
+
+			if (url == "notes") {
+				showNotes(Elements);
+			} else if (url == "toDos") {
+				showToDoLines(Elements);
+			}
 		};
 	}
 }
 
 function sortByDateCreation() {
-	var need = 'note'; /* for toDo reconfigure parameter */
-	var JsonNotes;
+	var JsonElements;
 
 	let xhr = new XMLHttpRequest();
-	let url = "/notes";
-
-	xhr.open("POST", url + "?action=sByDateCreation&need=" + need, true);
+	var url = window.location.pathname.split('/')[window.location.pathname
+			.split('/').length - 1];
+	xhr.open("POST", url + "?action=sByDateCreation", true);
 	xhr.send(null);
 
 	xhr.onreadystatechange = function() {
@@ -501,21 +604,35 @@ function sortByDateCreation() {
 			return;
 
 		if (this.status == 200) {
-			JsonNotes = this.responseText;
+			JsonElements = this.responseText;
 		}
-		const Notes = JSON.parse(JsonNotes);
+		const Elements = JSON.parse(JsonElements);
 
-		if (Notes.length != 0) {
+		if (Elements.length != 0) {
 			document.getElementById('format-container').style.display = "flex";
 			setCorrectHeightToTextContainer();
 		}
 		document.getElementById('notes-container').innerHTML = '';
-		showNotes(Notes);
+
+		if (url == "notes") {
+			showNotes(Elements);
+		} else if (url == "toDos") {
+			showToDoLines(Elements);
+		}
 	};
 }
 
-function showNotes(Notes) {
+function showToDoLines(ToDoLines) {
+	for (var i = 0; i < ToDoLines.length; i++) {
+		addToDoLineToPage(ToDoLines[i].id, ToDoLines[i].title,
+				ToDoLines[i].toDo);
+		if (parseInt(ToDoLines[i].id) > maxId) {
+			maxId = parseInt(ToDoLines[i].id);
+		}
+	}
+}
 
+function showNotes(Notes) {
 	for (var i = 0; i < Notes.length; i++) {
 		addNoteToPage(Notes[i].id, Notes[i].title, Notes[i].body);
 		if (parseInt(Notes[i].id) > maxId) {
@@ -592,6 +709,36 @@ function removeAllTags(item) {
 	item = item.replace('<', '&lt');
 	item = item.replace('>', '&gt');
 	return item;
+}
+
+function addToDoLineToPage(id, title, Elements) {
+	title = removeAllTags(title);
+	var toDos = '';
+	if (Elements != null) {
+		toDos = addToDoToPage(Elements);
+	}
+	var ToDoLine = '<div class="note" id="'
+			+ id
+			+ '" onclick="setToDoToContainer(this)"> <div style="height: 90%; padding: 10px 20px;"> <p style="font-size: 20px; border-bottom: 2px solid #000; max-height: 46px; padding-bottom: 4px; margin-block-start: 10px;" > <b>'
+			+ title + '</b> </p> <div class="body_note toDoLine">' + toDos
+			+ '</div> </div> </div>';
+	document.getElementById('notes-container').insertAdjacentHTML('afterbegin',
+			ToDoLine);
+}
+
+function addToDoToPage(Elements) {
+	var toDos = '';
+	for (var i = 0; i < Elements.length; i++) {
+		var checked = '';
+		if (Elements[i].marked == true) {
+			checked = 'checked';
+		}
+		toDos += '<div id = "' + Elements[i].id
+				+ '"><input type="checkbox" disabled="disabled" style="cursor: pointer;"' + checked
+				+ '><label class="strikethrough" style="cursor: pointer;">' + Elements[i].body
+				+ '</label></div>';
+	}
+	return toDos;
 }
 
 function addNoteToPage(id, title, body) {

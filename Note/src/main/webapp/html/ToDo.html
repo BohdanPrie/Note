@@ -42,9 +42,10 @@ window.onresize = changeStyleForScreen();
 				</a>
 			</div>
 		</div>
+
 		<div style="text-align: right; display: flex; align-items: center; justify-content: flex-end;">
 			<div class="topnav">
-				<a href="/toDos"><b>ToDos</b></a>
+				<a href="/notes"><b>Notes</b></a>
 			</div>
 			<div class="topnav">
 				<a href="/main"><b>Main</b></a>
@@ -60,7 +61,7 @@ window.onresize = changeStyleForScreen();
 			<div class="search-container">
 				<div class="btn_filter" style="width: 100%;">
 					<button style="width: 100%; margin-top: 0px;" onclick="add()">
-						<b>Add Note</b>
+						<b>Add ToDo</b>
 					</button>
 					<div class="search-input">
 						<input style="width: 85%; outline:none;" type="text" placeholder="Search..." name="q" id="q" autocomplete="off">
@@ -72,7 +73,7 @@ window.onresize = changeStyleForScreen();
 						<b>Sort by date creation</b>
 					</button>
 					<button style="width: 100%;" onclick="deleteAllNotes()">
-						<b>Delete all notes</b>
+						<b>Delete all ToDos</b>
 					</button>
 				</div>
 			</div>
@@ -80,7 +81,11 @@ window.onresize = changeStyleForScreen();
 		<div class="pretty_notes">
 			<div class="notes" id="notes-container"></div>
 			<div class="text_container" id="format-container">
-				<div class="work_with_notes">
+				<div class="work_with_notes" style="justify-content: space-between;">
+					<div class="control_btn gap">
+						<button class="search-button" onclick="addNewToDo()"><b>Add task</b></button>
+						<button class="search-button" onclick="deleteTask()" style="margin-right: 0%;"><b>Delete task</b></button>
+					</div>
 					<div class="control_btn">
 						<button class="search-button" onclick="saveNote()">
 							<b>Save</b>
@@ -92,8 +97,7 @@ window.onresize = changeStyleForScreen();
 				</div>
 				<textarea placeholder="Title" class="formNote" style="font-size: 25px; font-weight: bold; height: 16%;"
 					id="titleText" maxlength="80"></textarea>
-				<textarea placeholder="Note" class="formNote"
-					style="padding-top: 0px; vertical-align: top; margin-bottom: 3%; height: 76%;" id="noteText"></textarea>
+				<div class="formNote" style="padding-top: 0px; vertical-align: top; margin-bottom: 3%; height: 76%; display: flex; flex-direction: column; overflow-y: scroll;" id="noteText"></div>
 			</div>
 		</div>
 	</div>
