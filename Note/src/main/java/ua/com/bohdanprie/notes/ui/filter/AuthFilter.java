@@ -20,6 +20,8 @@ import ua.com.bohdanprie.notes.ui.WebUtils;
 
 @WebFilter(filterName = "AuthFilter")
 public class AuthFilter implements Filter {
+	private static final Logger LOG = LogManager.getLogger(AuthFilter.class.getName());
+	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 
@@ -30,7 +32,6 @@ public class AuthFilter implements Filter {
 
 	}
 
-	private static final Logger LOG = LogManager.getLogger(AuthFilter.class.getName());
 
 	public AuthFilter() {
 		LOG.debug("AuthFilter initialized");
@@ -48,7 +49,7 @@ public class AuthFilter implements Filter {
 		String UserAgent = request.getHeader("User-Agent");
 				
 		if (session == null || !UserAgent.equals(session.getAttribute("User-Agent"))) {
-			if ("/profile".equals(page) || "/notes".equals(page)) {
+			if ("/profile".equals(page) || "/notes".equals(page) || "/toDos".equals(page)) {
 				LOG.trace("User is trying to access private pages");
 				LOG.trace("Sending redirect to main page");
 				response.sendRedirect("/main");

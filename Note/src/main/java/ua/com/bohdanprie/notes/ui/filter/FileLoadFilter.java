@@ -22,7 +22,7 @@ public class FileLoadFilter implements Filter {
 	private static final Logger LOG = LogManager.getLogger(FileLoadFilter.class.getName());
 
 	public FileLoadFilter() {
-
+		LOG.debug("FileLoadFilter initialized");
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class FileLoadFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest requestFilter, ServletResponse responseFilter, FilterChain chain)
 			throws IOException, ServletException {
-
+		LOG.trace("Performing filter");
 		HttpServletRequest request = (HttpServletRequest) requestFilter;
 		HttpServletResponse response = (HttpServletResponse) responseFilter;
 
