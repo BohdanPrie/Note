@@ -10,22 +10,23 @@ import javax.sql.DataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ua.com.bohdanprie.notes.dao.entitiesDao.NoteDao;
-import ua.com.bohdanprie.notes.dao.entitiesDao.ToDoDao;
-import ua.com.bohdanprie.notes.dao.entitiesDao.ToDoLineDao;
-import ua.com.bohdanprie.notes.dao.entitiesDao.UserDao;
-import ua.com.bohdanprie.notes.dao.exceptions.DBException;
+import ua.com.bohdanprie.notes.dao.entityDao.NoteDao;
+import ua.com.bohdanprie.notes.dao.entityDao.ToDoDao;
+import ua.com.bohdanprie.notes.dao.entityDao.ToDoLineDao;
+import ua.com.bohdanprie.notes.dao.entityDao.UserDao;
+import ua.com.bohdanprie.notes.dao.exception.DBException;
 
-public final class DaoFactory {
-	private static final Logger LOG = LogManager.getLogger(DaoFactory.class.getName());
-	private static DaoFactory daoFactory;
+public final class DaoManager {
+	private static final Logger LOG = LogManager.getLogger(DaoManager.class.getName());
+	private static DaoManager daoFactory;
 	private UserDao userDao;
 	private NoteDao noteDao;
 	private ToDoDao toDoDao;
 	private ToDoLineDao toDoLineDao;
-	private DataSource source;
+	private static DataSource source;
 
-	private DaoFactory() {
+	private DaoManager() {
+		LOG.trace("Initializing Connection pool");
 		try {
 			InitialContext context = new InitialContext();
 			source = (DataSource) context.lookup("java:comp/env/jdbc/Notes");
@@ -33,11 +34,12 @@ public final class DaoFactory {
 			LOG.error("Fail lookup", e);
 			throw new DBException("Fail lookup", e);
 		}
+		LOG.debug("Connection pool initialized");
 	}
 	
-	public static DaoFactory getInstance() {
+	public static DaoManager getInstance() {
 		if (daoFactory == null) {
-			daoFactory = new DaoFactory();
+			daoFactory = new DaoManager();
 			LOG.debug("DaoFactory initialized");
 		}
 		return daoFactory;
@@ -82,9 +84,9 @@ public final class DaoFactory {
 			connection = source.getConnection();
 		} catch (SQLException e) {
 			LOG.error("Fail to create connection", e);
-			throw new DBException("Fail connection", e);
+			throw new DBException("Fail to create connection", e);
 		}
-		LOG.info("Returning connection " + connection);
+		LOG.info("Returning connection");
 		return connection;
 	}
 }

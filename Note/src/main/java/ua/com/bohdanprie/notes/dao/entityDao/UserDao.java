@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ua.com.bohdanprie.notes.dao.DaoFactory;
+import ua.com.bohdanprie.notes.dao.DaoManager;
 import ua.com.bohdanprie.notes.dao.exception.DBException;
 import ua.com.bohdanprie.notes.dao.exception.DaoException;
 import ua.com.bohdanprie.notes.domain.entity.User;
@@ -17,8 +17,14 @@ import java.sql.SQLException;
 
 public class UserDao {
 	private static final Logger LOG = LogManager.getLogger(UserDao.class.getName());
-	private DaoFactory daoFactory = DaoFactory.getInstance();
+	private final DaoManager daoFactory;
 
+	public UserDao() {
+		LOG.trace("Getting DaoFactory instance");
+		daoFactory = DaoManager.getInstance();
+		LOG.debug("UserDao initialized");
+	}
+	
 	public User create(String login, String password) {
 		LOG.trace("Creating user " + login);
 		String SQL = "INSERT INTO notes.users (login, password) VALUES (?, ?);";
@@ -42,7 +48,7 @@ public class UserDao {
 					user = new User(resultSet.getString("login"), resultSet.getString("password"));
 				}
 			} catch (SQLException e) {
-				LOG.warn("User " + login + " was not created", e);
+				LOG.error("User " + login + " was not created", e);
 				throw new DaoException("User " + login + " was not created", e);
 			}
 		} catch (DBException e) {
@@ -73,11 +79,11 @@ public class UserDao {
 				LOG.trace("Executing SQL");
 				int rowsAffected = statement.executeUpdate();
 				if (rowsAffected == 0) {
-					LOG.warn("Fail to change login");
-					throw new IllegalArgumentException("Fail to change login");
+					LOG.warn("User " + user.getLogin() + " not found");
+					throw new IllegalArgumentException("User " + user.getLogin() + " not found");
 				}
 			} catch (SQLException e) {
-				LOG.warn("Fail to change login", e);
+				LOG.error("Fail to change login", e);
 				throw new DaoException("Fail to change login", e);
 			}
 		} catch (DBException e) {
@@ -103,16 +109,15 @@ public class UserDao {
 				statement = connection.prepareStatement(SQL);
 				statement.setString(1, newPassword);
 				statement.setString(2, login);
-
 				LOG.trace("Executing SQL");
 				int rowsAffected = statement.executeUpdate();
 				if (rowsAffected == 0) {
-					LOG.warn("Fail to change password");
-					throw new IllegalArgumentException("Fail to change password");
+					LOG.warn("User " + user.getLogin() + " not found");
+					throw new IllegalArgumentException("User " + user.getLogin() + " not found");
 				}
 			} catch (SQLException e) {
-				LOG.warn("Fail to change password");
-				throw new DaoException("Fail to change password");
+				LOG.error("Fail to change password", e);
+				throw new DaoException("Fail to change password", e);
 			}
 		} catch (DBException e) {
 			LOG.error("Fail to create connection", e);
@@ -134,16 +139,15 @@ public class UserDao {
 				LOG.trace("Preparing statement");
 				statement = connection.prepareStatement(SQL);
 				statement.setString(1, user.getLogin());
-
 				LOG.trace("Executing SQL");
 				int rowsAffected = statement.executeUpdate();
 				if (rowsAffected == 0) {
-					LOG.warn("Fail to delete user");
-					throw new IllegalArgumentException("Fail to delete user");
+					LOG.warn("User " + user.getLogin() + " not found");
+					throw new IllegalArgumentException("User " + user.getLogin() + " not found");
 				}
 			} catch (SQLException e) {
-				LOG.warn("Fail to delete user");
-				throw new DaoException("Fail to delete user");
+				LOG.error("Fail to delete user", e);
+				throw new DaoException("Fail to delete user", e);
 			}
 		} catch (DBException e) {
 			LOG.error("Fail to create connection", e);

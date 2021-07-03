@@ -1,36 +1,40 @@
-package ua.com.bohdanprie.notes.domain.manager.managerImpl;
+package ua.com.bohdanprie.notes.domain.service.serviceImpl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ua.com.bohdanprie.notes.dao.DaoFactory;
+import ua.com.bohdanprie.notes.dao.DaoManager;
 import ua.com.bohdanprie.notes.dao.entityDao.UserDao;
 import ua.com.bohdanprie.notes.dao.exception.DaoException;
-import ua.com.bohdanprie.notes.domain.ManagerFactory;
+import ua.com.bohdanprie.notes.domain.ServiceManager;
 import ua.com.bohdanprie.notes.domain.entity.User;
 import ua.com.bohdanprie.notes.domain.exception.AuthorisationException;
 import ua.com.bohdanprie.notes.domain.exception.NoSuchUserException;
-import ua.com.bohdanprie.notes.domain.manager.UserManager;
+import ua.com.bohdanprie.notes.domain.service.UserService;
 
-public class UserManagerImpl implements UserManager{
-	private static final Logger LOG = LogManager.getLogger(UserManagerImpl.class.getName());
-	private NoteManager noteManager;
-	private ToDoLineManager toDoLineManager;
-	private UserDao userDao;
+public class UserServiceImpl implements UserService {
+	private static final Logger LOG = LogManager.getLogger(UserServiceImpl.class.getName());
+	private final NoteService noteService;
+	private final ToDoLineService toDoLineService;
+	private final UserDao userDao;
 
-	public UserManagerImpl() {
-		toDoLineManager = ManagerFactory.getInstance().getToDoLineManager();
-		noteManager = ManagerFactory.getInstance().getNoteManager();
-		userDao = DaoFactory.getInstance().getUserDao();
+	public UserServiceImpl() {
+		LOG.trace("Getting ToDoLineService instance");
+		toDoLineService = ServiceManager.getInstance().getToDoLineService();
+		LOG.trace("Getting NoteService instance");
+		noteService = ServiceManager.getInstance().getNoteService();
+		LOG.trace("Getting UserDao instance");
+		userDao = DaoManager.getInstance().getUserDao();
+		LOG.debug("UserService initialized");
 	}
 
 	@Override
 	public User authorisation(String login, String password) {
 		LOG.trace("Authorisation user  " + login);
-		User tempUser = null;
+		User user = null;
 
 		try {
-			tempUser = userDao.find(login);
+			user = userDao.find(login);
 		} catch (DaoException e) {
 			LOG.error("Fail to find user " + login, e);
 		} catch (IllegalArgumentException e) {
@@ -38,12 +42,12 @@ public class UserManagerImpl implements UserManager{
 			throw new NoSuchUserException(e);
 		}
 
-		if (password == null || !password.equals(tempUser.getPassword())) {
+		if (password == null || !password.equals(user.getPassword())) {
 			LOG.warn("Wrong password");
 			throw new AuthorisationException("Wrong password");
 		}
-		LOG.info("User " + login + " was found");
-		return tempUser;
+		LOG.info("User " + user.getLogin() + " was found");
+		return user;
 	}
 
 	@Override
@@ -57,7 +61,8 @@ public class UserManagerImpl implements UserManager{
 			LOG.warn("User  " + login + " already exist", e);
 			throw new AuthorisationException("User " + login + " already exist", e);
 		}
-		LOG.info("User " + login + " was created");
+		LOG.info("User " + user.getLogin() + " was created");
+		LOG.trace("Creating basic elements for user " + user.getLogin());
 		createForNewUser(user);
 		return user;
 	}
@@ -106,13 +111,15 @@ public class UserManagerImpl implements UserManager{
 		}
 		LOG.info("User " + user.getLogin() + " was deleted");
 	}
-	
+
 	private void createForNewUser(User user) {
-		for(int id = 0; id < 2; id++) {
+		LOG.trace("Creating basic elements for user " + user.getLogin());
+		for (int id = 0; id < 2; id++) {
 			LOG.trace("Creating note for user " + user.getLogin());
-			noteManager.create(id, user);
+			noteService.create(id, user);
 			LOG.trace("Creating toDoLine for user " + user.getLogin());
-			toDoLineManager.create(id, user);
+			toDoLineService.create(id, user);
 		}
+		LOG.trace("Basic elements created for user " + user.getLogin());
 	}
 }

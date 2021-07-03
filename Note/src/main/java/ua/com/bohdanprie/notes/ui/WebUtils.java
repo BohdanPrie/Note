@@ -11,10 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ua.com.bohdanprie.notes.domain.ManagerFactory;
-import ua.com.bohdanprie.notes.domain.managers.TextManager;
-import ua.com.bohdanprie.notes.domain.managers.UserManager;
-
 public final class WebUtils {
 	private static final Logger LOG = LogManager.getLogger(WebUtils.class.getName());
 	
@@ -32,10 +28,12 @@ public final class WebUtils {
 		} else if (resource.endsWith(".js")) {
 			file = new File("src/main/webapp/js/" + resource);
 			response.setContentType("application/javascript");
+		} else {
+			return;
 		}
 		LOG.trace("Trimming resource " + resource);
 		String trimmedResource  = trimResourse(file);
-		LOG.trace("Writing resource to response");
+		LOG.info("Writing resource to response");
 		response.getWriter().append(trimmedResource);
 	}
 	
@@ -56,7 +54,7 @@ public final class WebUtils {
 			line = reader.readLine();
 		}
 		reader.close();
-		LOG.trace("Returning trimmed file");
+		LOG.info("Returning trimmed file");
 		return response.toString();
 	}
 
@@ -65,6 +63,7 @@ public final class WebUtils {
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().print(JSON);
+		LOG.info("JSON was loaded to response");
 	}
 
 	public static String readData(HttpServletRequest request) throws IOException {
@@ -75,22 +74,13 @@ public final class WebUtils {
 		while ((line = reader.readLine()) != null) {
 			data.append(line);
 		}
-		LOG.trace("Returning data, read from request");
+		LOG.info("Returning data, read from request");
 		return data.toString();
 	}
 	
-	public static TextManager getTextManager(HttpServletRequest request) {
-		String elementsNeeded = request.getParameter("need");
-		TextManager manager = null;
-		if("note".equals(elementsNeeded)) {
-			manager = ManagerFactory.getInstance().getNoteManager();
-		} else if("toDo".equals(elementsNeeded)) {
-			manager = ManagerFactory.getInstance().getToDoLineManager();
-		}
-		return manager;
-	}
-	
-	public static UserManager getUserManager() {
-		return ManagerFactory.getInstance().getUserManager();
+	public static String getRequestedPath(HttpServletRequest request) {
+		String requestURI = request.getRequestURI();		
+		LOG.info("Returning curent path");
+		return request.getRequestURI().substring(requestURI.lastIndexOf("/"));
 	}
 }

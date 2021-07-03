@@ -6,8 +6,8 @@ import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 
-import ua.com.bohdanprie.notes.domain.ManagerUtils;
-import ua.com.bohdanprie.notes.domain.entities.Note;
+import ua.com.bohdanprie.notes.domain.ServiceUtils;
+import ua.com.bohdanprie.notes.domain.entity.Note;
 
 public class TestClass {
 	private static ArrayList<Note> notes;
@@ -31,22 +31,14 @@ public class TestClass {
 		notes.add(note1);
 		notes.add(note2);
 		notes.add(note3);
-		
-		System.out.println(notes.get(0).getTimeCreation());
-		System.out.println(notes.get(1).getTimeCreation());
-		System.out.println(notes.get(2).getTimeCreation());
 	}
 	
 	@Test
 	public void sortingByTimeCreation() {
 		
-		ArrayList<Note> testNotes = ManagerUtils.sortByTimeCreation(notes);
+		ArrayList<Note> testNotes = ServiceUtils.sortByTimeCreation(notes);
 		
 		assertEquals(ArrayList.class, testNotes.getClass());
-		
-		System.out.println(testNotes.get(0).getTitle());
-		System.out.println(testNotes.get(1).getTitle());
-		System.out.println(testNotes.get(2).getTitle());
 		
 		assertEquals("Title 2", testNotes.get(0).getTitle());
 		assertEquals("Title 1", testNotes.get(2).getTitle());
@@ -55,13 +47,9 @@ public class TestClass {
 	
 	@Test
 	public void sortingByLastChange() {
-		ArrayList<Note> testNotes = ManagerUtils.sortByLastChange(notes);
+		ArrayList<Note> testNotes = ServiceUtils.sortByLastChange(notes);
 		
 		assertEquals(ArrayList.class, testNotes.getClass());
-		
-		System.out.println(testNotes.get(0).getTitle());
-		System.out.println(testNotes.get(1).getTitle());
-		System.out.println(testNotes.get(2).getTitle());
 		
 		assertEquals("Title 1", testNotes.get(0).getTitle());
 		assertEquals("Title 2", testNotes.get(1).getTitle());
@@ -70,7 +58,7 @@ public class TestClass {
 	
 	@Test
 	public void toJson() {
-		String JSON = ManagerUtils.toJSON(notes);
+		String JSON = ServiceUtils.toJSON(notes);
 		
 		assertEquals(false, JSON.contains("timeChange"));
 		assertEquals(false, JSON.contains("timeCreation"));
@@ -83,4 +71,7 @@ public class TestClass {
 		assertEquals(true, positionNote2 < positionNote3);
 		assertEquals(true, positionNote1 < positionNote3);
 	}
+	
+	
+	
 }

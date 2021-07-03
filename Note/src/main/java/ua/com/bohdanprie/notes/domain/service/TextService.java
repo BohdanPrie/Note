@@ -1,8 +1,9 @@
-package ua.com.bohdanprie.notes.domain.managers;
+package ua.com.bohdanprie.notes.domain.service;
 
-import ua.com.bohdanprie.notes.domain.entities.User;
+import ua.com.bohdanprie.notes.domain.entity.User;
 
-public interface TextManager {
+public interface TextService {
+	
 	public void deleteAll(User user);
 	
 	public void create(int id, User user);

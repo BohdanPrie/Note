@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ua.com.bohdanprie.notes.dao.DaoFactory;
+import ua.com.bohdanprie.notes.dao.DaoManager;
 import ua.com.bohdanprie.notes.dao.DaoUtils;
 import ua.com.bohdanprie.notes.dao.exception.DBException;
 import ua.com.bohdanprie.notes.dao.exception.DaoException;
@@ -19,11 +19,13 @@ import ua.com.bohdanprie.notes.domain.entity.Note;
 import ua.com.bohdanprie.notes.domain.entity.User;
 
 public class NoteDao {
-	private DaoFactory daoFactory;
+	private final DaoManager daoFactory;
 	private static final Logger LOG = LogManager.getLogger(NoteDao.class.getName());
 
 	public NoteDao() {
-		daoFactory = DaoFactory.getInstance();
+		LOG.trace("Getting DaoFactory instance");
+		daoFactory = DaoManager.getInstance();
+		LOG.debug("NoteDao initialized");
 	}
 
 	public void change(Note note, User user) {
@@ -42,12 +44,11 @@ public class NoteDao {
 				statement.setTimestamp(3, new Timestamp(note.getTimeChange().getTime()));
 				statement.setString(4, user.getLogin());
 				statement.setInt(5, note.getId());
-
 				LOG.trace("Executing SQL");
 				statement.executeUpdate();
 			} catch (SQLException e) {
-				LOG.error("Fail to change the note of user " + user.getLogin(), e);
-				throw new DaoException("Fail to change the note of user " + user.getLogin(), e);
+				LOG.error("Fail to change the note at user " + user.getLogin(), e);
+				throw new DaoException("Fail to change the note at user " + user.getLogin(), e);
 			}
 		} catch (DBException e) {
 			LOG.error("Fail to create connection", e);
@@ -69,7 +70,6 @@ public class NoteDao {
 				LOG.trace("Preparing statement");
 				statement = connection.prepareStatement(SQL);
 				statement.setString(1, user.getLogin());
-
 				LOG.trace("Executing SQL");
 				statement.execute();
 			} catch (SQLException e) {
@@ -85,7 +85,7 @@ public class NoteDao {
 	}
 
 	public void delete(int id, User user) {
-		LOG.trace("Deleting note from user " + user.getLogin());
+		LOG.trace("Deleting note by id from user " + user.getLogin());
 		String SQL = "DELETE FROM notes.notes WHERE user_login = ? AND id = ?;";
 
 		PreparedStatement statement = null;
@@ -97,12 +97,11 @@ public class NoteDao {
 				statement = connection.prepareStatement(SQL);
 				statement.setString(1, user.getLogin());
 				statement.setInt(2, id);
-
 				LOG.trace("Executing SQL");
 				statement.execute();
 			} catch (SQLException e) {
-				LOG.error("Fail to delete the note of user " + user.getLogin(), e);
-				throw new DaoException("Fail to delete the note of user " + user.getLogin(), e);
+				LOG.error("Fail to delete note by id from user " + user.getLogin(), e);
+				throw new DaoException("Fail to delete note by id from user " + user.getLogin(), e);
 			}
 		} catch (DBException e) {
 			LOG.error("Fail to create connection", e);
@@ -113,9 +112,10 @@ public class NoteDao {
 	}
 
 	public Note create(int id, User user) {
-		StringBuffer SQLInsert = new StringBuffer("INSERT INTO notes.notes (user_login, title, body, id, time_creation, time_change) VALUES ");
 		LOG.trace("Creating new note for user " + user.getLogin());
-		String SQL = SQLInsert.append(DaoUtils.buildInsertValuesQuery(1, 6)).append(";").toString();
+		StringBuffer SQLInsert = new StringBuffer("INSERT INTO notes.notes (user_login, title, body, id, time_creation, time_change) VALUES ");
+		DaoUtils.buildInsertValuesQuery(1, 6, SQLInsert);
+		String SQL = SQLInsert.append(";").toString();
 
 		Note note = null;
 
@@ -133,13 +133,14 @@ public class NoteDao {
 				statement.setInt(4, id);
 				statement.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
 				statement.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
-
 				LOG.trace("Executing SQL");
 				statement.execute();
 				LOG.trace("Getting result set");
 				resultSet = statement.getGeneratedKeys();
 				if (resultSet.next()) {
-					note = new Note(resultSet.getString("title"), resultSet.getString("body"), resultSet.getInt("id"));
+					note = new Note(resultSet.getString("title"), 
+							resultSet.getString("body"), 
+							resultSet.getInt("id"));
 					note.setTimeCreation(resultSet.getTimestamp("time_creation"));
 					note.setTimeChange(resultSet.getTimestamp("time_change"));
 				}
@@ -152,7 +153,7 @@ public class NoteDao {
 		} catch (SQLException e) {
 			LOG.error("Fail at closing", e);
 		}
-		LOG.info("Returning note from user " + user.getLogin());
+		LOG.info("Returning created note for user " + user.getLogin());
 		return note;
 	}
 
@@ -173,19 +174,19 @@ public class NoteDao {
 				statement.setString(1, user.getLogin());
 				statement.setString(2, "%" + pattern + "%");
 				statement.setString(3, "%" + pattern + "%");
-
 				LOG.trace("Getting result set");
 				resultSet = statement.executeQuery();
 				while (resultSet.next()) {
-					Note note = new Note(resultSet.getString("title"), resultSet.getString("body"),
+					Note note = new Note(resultSet.getString("title"), 
+							resultSet.getString("body"),
 							resultSet.getInt("id"));
 					note.setTimeCreation(resultSet.getTimestamp("time_creation"));
 					note.setTimeChange(resultSet.getTimestamp("time_change"));
 					notes.add(note);
 				}
 			} catch (SQLException e) {
-				LOG.warn("Fail to get notes by pattern at user " + user.getLogin(), e);
-				throw new DaoException("Fail to get notes by pattern at user " + user.getLogin(), e);
+				LOG.warn("Fail to get notes by pattern from user " + user.getLogin(), e);
+				throw new DaoException("Fail to get notes by pattern from user " + user.getLogin(), e);
 			}
 		} catch (DBException e) {
 			LOG.error("Fail to create connection", e);
@@ -211,19 +212,19 @@ public class NoteDao {
 				LOG.trace("Preparing statement");
 				statement = connection.prepareStatement(SQL);
 				statement.setString(1, user.getLogin());
-
 				LOG.trace("Getting result set");
 				resultSet = statement.executeQuery();
 				while (resultSet.next()) {
-					Note note = new Note(resultSet.getString("title"), resultSet.getString("body"),
+					Note note = new Note(resultSet.getString("title"), 
+							resultSet.getString("body"),
 							resultSet.getInt("id"));
 					note.setTimeChange(resultSet.getTimestamp("time_change"));
 					note.setTimeCreation(resultSet.getTimestamp("time_creation"));
 					notes.add(note);
 				}
 			} catch (SQLException e) {
-				LOG.warn("Fail to get all notes at user " + user.getLogin(), e);
-				throw new DaoException("Fail to get all notes at user " + user.getLogin(), e);
+				LOG.warn("Fail to get all notes from user " + user.getLogin(), e);
+				throw new DaoException("Fail to get all notes from user " + user.getLogin(), e);
 			}
 		} catch (DBException e) {
 			LOG.error("Fail to create connection", e);

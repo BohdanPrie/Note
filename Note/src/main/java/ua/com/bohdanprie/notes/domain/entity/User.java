@@ -16,7 +16,7 @@ public class User {
 	public User(String login, String password) {
 		this.login = login;
 		this.password = password;
-		LOG.trace("Creating user " + login);
+		LOG.info("Creating user " + login);
 	}
 
 	public String getLogin() {
@@ -37,7 +37,7 @@ public class User {
 
 	public void setToDoLines(List<ToDoLine> toDoLines) {
 		if (toDoLines == null) {
-			LOG.trace("ToDoLines list is null");
+			LOG.debug("ToDoLines list is null");
 		} else {
 			this.toDoLines = toDoLines;
 		}
@@ -45,7 +45,7 @@ public class User {
 
 	public void setNotes(List<Note> notes) {
 		if (notes == null) {
-			LOG.trace("Notes list is null");
+			LOG.debug("Notes list is null");
 		} else {
 			this.notes = notes;
 		}
@@ -53,7 +53,7 @@ public class User {
 
 	public void changeLogin(String login) {
 		if (login == null || login.isEmpty()) {
-			LOG.trace("Login is null or empty");
+			LOG.debug("Login is null or empty");
 		} else {
 			this.login = login;
 		}
@@ -61,7 +61,7 @@ public class User {
 
 	public void changePassword(String password) {
 		if (password == null || password.isEmpty()) {
-			LOG.trace("Password is null or empty");
+			LOG.debug("Password is null or empty");
 		} else {
 			this.password = password;
 		}

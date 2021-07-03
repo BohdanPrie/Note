@@ -19,7 +19,6 @@ public class StartPage extends HttpServlet {
 	private static final Logger LOG = LogManager.getLogger(StartPage.class.getName());
 
 	public StartPage() {
-		super();
 		LOG.debug("Servlet StartPage initialized");
 	}
 

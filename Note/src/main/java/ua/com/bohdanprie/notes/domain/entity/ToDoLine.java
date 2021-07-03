@@ -28,7 +28,7 @@ public class ToDoLine extends AbstractTextContainer{
 
 	public void setToDo(List<ToDo> toDo) {
 		if (toDo == null) {
-			LOG.trace("ToDo list is null");
+			LOG.debug("ToDo list is null");
 		} else {
 			this.toDo = toDo;
 		}

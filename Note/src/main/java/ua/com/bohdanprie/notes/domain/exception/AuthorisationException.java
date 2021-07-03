@@ -13,4 +13,8 @@ public class AuthorisationException extends RuntimeException {
 	public AuthorisationException(String message, Throwable cause) {
 		super(message, cause);
 	}
+	
+	public AuthorisationException(Throwable cause) {
+		super(cause);
+	}
 }

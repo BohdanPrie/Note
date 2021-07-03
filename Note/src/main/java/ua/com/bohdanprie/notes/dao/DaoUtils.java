@@ -1,10 +1,20 @@
 package ua.com.bohdanprie.notes.dao;
 
-public final class DaoUtils {
-	
-	public static String buildInsertValuesQuery(int numberRows, int numberElements) {
-		StringBuffer SQL = new StringBuffer();
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+public final class DaoUtils {
+	private static final Logger LOG = LogManager.getLogger(DaoUtils.class.getName());
+
+	public static void buildInsertValuesQuery(int numberRows, int numberElements, StringBuffer SQL) {
+		LOG.trace("Building query to insert user's data");
+		if(SQL == null) {
+			LOG.debug("Buffer is null");
+			return;
+		}
+		if(numberRows == 0) {
+			SQL.append("()");
+		}
 		for (int values = 0; values < numberRows; values++) {
 			SQL.append("(");
 			for(int elems = 0; elems < numberElements; elems++) {
@@ -17,7 +27,7 @@ public final class DaoUtils {
 			if(values != numberRows - 1) {
 				SQL.append(", ");
 			}
-		}		
-		return SQL.toString();
+		}	
+		LOG.info("Query to insert user's data is built");
 	}
 }

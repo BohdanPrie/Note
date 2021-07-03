@@ -11,21 +11,21 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ua.com.bohdanprie.notes.domain.entities.User;
-import ua.com.bohdanprie.notes.domain.exceptions.AuthorisationException;
-import ua.com.bohdanprie.notes.domain.exceptions.NoSuchUserException;
-import ua.com.bohdanprie.notes.domain.managers.UserManager;
+import ua.com.bohdanprie.notes.domain.ServiceManager;
+import ua.com.bohdanprie.notes.domain.entity.User;
+import ua.com.bohdanprie.notes.domain.exception.AuthorisationException;
+import ua.com.bohdanprie.notes.domain.exception.NoSuchUserException;
+import ua.com.bohdanprie.notes.domain.service.UserService;
 import ua.com.bohdanprie.notes.ui.WebUtils;
 
 @WebServlet("/login")
 public class Login extends HttpServlet {
 	private static final long serialVersionUID = -5979986946771364505L;
 	private static final Logger LOG = LogManager.getLogger(Login.class.getName());
-	private UserManager userManager;
+	private UserService userService;
 
 	public Login() {
-		super();
-		userManager = WebUtils.getUserManager();
+		userService = ServiceManager.getInstance().getUserService();
 		LOG.debug("Servlet Login initialized");
 	}
 
@@ -45,7 +45,7 @@ public class Login extends HttpServlet {
 		
 		try {
 			LOG.trace("Authorisation user with login = " + login);
-			User user = userManager.authorisation(login, password);
+			User user = userService.authorisation(login, password);
 			response.setStatus(HttpServletResponse.SC_CREATED);
 			LOG.info("Creating session for user " + user.getLogin());
 			request.getSession().setAttribute("user", user);

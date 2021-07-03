@@ -1,8 +1,8 @@
-package ua.com.bohdanprie.notes.domain.manager;
+package ua.com.bohdanprie.notes.domain.service;
 
 import ua.com.bohdanprie.notes.domain.entity.User;
 
-public interface UserManager {
+public interface UserService {
 
 	public User authorisation(String login, String password);
 
