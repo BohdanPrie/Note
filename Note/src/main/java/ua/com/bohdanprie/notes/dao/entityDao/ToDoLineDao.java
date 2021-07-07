@@ -283,7 +283,7 @@ public class ToDoLineDao {
 	public Integer[] getAllIdByPattern(User user, String pattern) {
 		LOG.trace("Getting all id of toDoLines that match pattern from user " + user.getLogin());
 		Set<Integer> allLinesId = new HashSet<>();
-		String SQL = "SELECT id FROM notes.to_do_line WHERE (user_login = ? AND title ILIKE ?) OR id IN(SELECT list_id FROM notes.to_do WHERE user_login = ? AND body ILIKE ?);";
+		String SQL = "SELECT id FROM notes.to_do_line WHERE (user_login = ? AND title ILIKE ?) OR id IN(SELECT line_id FROM notes.to_do WHERE user_login = ? AND body ILIKE ?);";
 
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
