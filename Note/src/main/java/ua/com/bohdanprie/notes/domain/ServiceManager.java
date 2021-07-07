@@ -55,9 +55,9 @@ public final class ServiceManager {
 	public TextService getTextService(String need) {
 		LOG.trace("Getting TextService depending on need");
 		TextService service = null;
-    	if("notes".equals(need)) {
+    	if("/notes".equals(need)) {
     		service = getNoteService();
-    	} else if("toDos".equals(need)) {
+    	} else if("/toDos".equals(need)) {
     		service = getToDoLineService();
     	}
     	LOG.trace("Returning TextService");

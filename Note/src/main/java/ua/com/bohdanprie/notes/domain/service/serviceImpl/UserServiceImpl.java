@@ -43,8 +43,8 @@ public class UserServiceImpl implements UserService {
 		}
 
 		if (password == null || !password.equals(user.getPassword())) {
-			LOG.warn("Wrong password");
-			throw new AuthorisationException("Wrong password");
+			LOG.warn("Wrong password for user " + user.getLogin());
+			throw new AuthorisationException("Wrong password for user " + user.getLogin());
 		}
 		LOG.info("User " + user.getLogin() + " was found");
 		return user;

@@ -37,7 +37,7 @@ public final class ServiceUtils {
 		return (T) elements;
 	}
 	
-	public static String toJSON(List<? extends AbstractTextContainer> elements) {
+	public static <T> String toJSON(List<T> elements) {
 		LOG.trace("Converting data to JSON");
 		String JSON = null;
 		ObjectMapper mapper = new ObjectMapper();
@@ -54,8 +54,19 @@ public final class ServiceUtils {
 		LOG.trace("Combining user's data");
 		for(int i = 0; i < values.size(); i++) {
 			int id = values.get(i).getId();
-			values.get(i).setToDo(arrays.get(id));
+			values.get(i).setToDo(sortById(arrays.get(id)));
 		}
 		LOG.info("Combining complited");
+	}
+	
+	public static List<ToDo> sortById(List<ToDo> elements) {
+		LOG.trace("Sorting elements by id");
+		if(elements == null) {
+			LOG.debug("Elements are null");
+			return elements;
+		}
+		elements = elements.stream().sorted(Comparator.comparing(element -> element.getId())).collect(Collectors.toList());
+		LOG.info("Returning sorted by id elements");
+		return elements;
 	}
 }

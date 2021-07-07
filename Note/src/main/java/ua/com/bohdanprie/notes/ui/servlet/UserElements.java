@@ -28,7 +28,7 @@ public class UserElements extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		TextService manager = ServiceManager.getInstance().getTextService(request.getParameter("need"));
+		TextService manager = ServiceManager.getInstance().getTextService(WebUtils.getRequestedPath(request));
 
 		if ("getAll".equals(request.getParameter("action"))) {
 			User user = ((User) request.getSession().getAttribute("user"));
@@ -51,7 +51,7 @@ public class UserElements extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		LOG.trace("Post request to UserElements");
-		TextService manager = ServiceManager.getInstance().getTextService(request.getParameter("need"));
+		TextService manager = ServiceManager.getInstance().getTextService(WebUtils.getRequestedPath(request));
 		String action = request.getParameter("action");
 		String search = request.getParameter("q");
 		User user = ((User) request.getSession().getAttribute("user"));
@@ -80,7 +80,7 @@ public class UserElements extends HttpServlet {
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		LOG.trace("Delete request to UserElements");
-		TextService manager = ServiceManager.getInstance().getTextService(request.getParameter("need"));
+		TextService manager = ServiceManager.getInstance().getTextService(WebUtils.getRequestedPath(request));
 
 		String action = request.getParameter("action");
 		User user = ((User) request.getSession().getAttribute("user"));
@@ -88,7 +88,7 @@ public class UserElements extends HttpServlet {
 		if ("deleteAllNotes".equals(action)) {
 			LOG.trace("Deleting all elements for user " + user.getLogin());
 			manager.deleteAll(user);
-		} else if(action != null){
+		} else if(action == null){
 			LOG.trace("Deleting element for user " + user.getLogin());
 			int id = Integer.parseInt(request.getParameter("id"));
 			manager.delete(id, user);			

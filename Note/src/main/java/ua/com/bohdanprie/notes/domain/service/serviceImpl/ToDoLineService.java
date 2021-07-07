@@ -2,7 +2,6 @@ package ua.com.bohdanprie.notes.domain.service.serviceImpl;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -90,7 +89,7 @@ public class ToDoLineService implements TextService {
 	@Override
 	public String getAll(User user) {
 		LOG.trace("Getting all toDoLines and toDos from user " + user.getLogin());
-		List<ToDoLine> toDoLines = null;
+		ArrayList<ToDoLine> toDoLines = null;
 		Map<Integer, ArrayList<ToDo>> arraysToDo = null;
 		try {
 			toDoLines = toDoLineDao.getAll(user);
@@ -110,7 +109,7 @@ public class ToDoLineService implements TextService {
 	@Override
 	public String getSortedByCreation(User user) {
 		LOG.trace("Getting sorted toDoLines by creation at user " + user.getLogin());
-		List<ToDoLine> toDoLines = null;
+		ArrayList<ToDoLine> toDoLines = null;
 		Map<Integer, ArrayList<ToDo>> arraysToDo = null;
 		try {
 			toDoLines = toDoLineDao.getAll(user);
@@ -130,7 +129,7 @@ public class ToDoLineService implements TextService {
 	@Override
 	public String searchByPattern(User user, String pattern) {
 		LOG.trace("Getting all toDoLines and toDos by pattern from user " + user.getLogin());
-		List<ToDoLine> toDoLines = null;
+		ArrayList<ToDoLine> toDoLines = null;
 		Map<Integer, ArrayList<ToDo>> arraysToDo = null;
 		Integer[] patternId = null;
 		try {
