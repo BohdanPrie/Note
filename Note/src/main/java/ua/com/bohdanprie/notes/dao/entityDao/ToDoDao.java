@@ -113,7 +113,9 @@ public class ToDoDao {
 	public void change(int lineId, List<ToDo> newValue, User user) {
 		LOG.trace("Changing toDos at user " + user.getLogin());
 		deleteFromLine(lineId, user);
-		add(lineId, newValue, user);
+		if(newValue.size() != 0) {
+			add(lineId, newValue, user);
+		}
 	}
 
 	/**
