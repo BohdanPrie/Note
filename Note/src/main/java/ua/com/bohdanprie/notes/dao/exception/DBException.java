@@ -1,5 +1,10 @@
 package ua.com.bohdanprie.notes.dao.exception;
-
+/**
+ * Thrown when fail in connection with database occurs
+ * <br>For example: fail to connect to DB, fail to get connection from connection pool
+ * @author bohda
+ *
+ */
 @SuppressWarnings("serial")
 public class DBException extends RuntimeException {
 

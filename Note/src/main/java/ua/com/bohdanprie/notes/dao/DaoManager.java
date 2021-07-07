@@ -15,7 +15,11 @@ import ua.com.bohdanprie.notes.dao.entityDao.ToDoDao;
 import ua.com.bohdanprie.notes.dao.entityDao.ToDoLineDao;
 import ua.com.bohdanprie.notes.dao.entityDao.UserDao;
 import ua.com.bohdanprie.notes.dao.exception.DBException;
-
+/**
+ * Class created to work with all Daos that are in the program
+ * @author bohda
+ *
+ */
 public final class DaoManager {
 	private static final Logger LOG = LogManager.getLogger(DaoManager.class.getName());
 	private static DaoManager daoFactory;
@@ -25,6 +29,9 @@ public final class DaoManager {
 	private ToDoLineDao toDoLineDao;
 	private static DataSource source;
 
+	/**
+	 * Initialize DaoManager and Data from where connections will be taken
+	 */
 	private DaoManager() {
 		LOG.trace("Initializing Connection pool");
 		try {
@@ -77,6 +84,11 @@ public final class DaoManager {
 		return noteDao;
 	}
 
+	/**
+	 * Method get connection from Connection Pool, 
+	 * <br>or create one if others are busy and maxConnection in Connection Pool is not reached
+	 * @return connection
+	 */
 	public Connection getConnection() {
 		LOG.trace("Creating connection");
 		Connection connection;

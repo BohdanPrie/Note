@@ -1,5 +1,9 @@
 package ua.com.bohdanprie.notes.dao.exception;
-
+/**
+ * Thrown when fail in work with database occurs
+ * @author bohda
+ *
+ */
 @SuppressWarnings("serial")
 public class DaoException extends RuntimeException{
     public DaoException() {

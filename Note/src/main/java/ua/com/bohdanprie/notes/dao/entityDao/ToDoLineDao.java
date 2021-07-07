@@ -17,19 +17,29 @@ import ua.com.bohdanprie.notes.dao.DaoManager;
 import ua.com.bohdanprie.notes.dao.DaoUtils;
 import ua.com.bohdanprie.notes.dao.exception.DBException;
 import ua.com.bohdanprie.notes.dao.exception.DaoException;
+import ua.com.bohdanprie.notes.domain.entity.ToDo;
 import ua.com.bohdanprie.notes.domain.entity.ToDoLine;
 import ua.com.bohdanprie.notes.domain.entity.User;
-
+/**
+ * Class provide work with CRUD operations with {@link ToDoLine}
+ * @author bohda
+ *
+ */
 public class ToDoLineDao {
-	private final DaoManager daoFactory;
+	private final DaoManager daoManager;
 	private static final Logger LOG = LogManager.getLogger(ToDoLineDao.class.getName());
 
 	public ToDoLineDao() {
-		LOG.trace("Getting DaoFactory instance");
-		daoFactory = DaoManager.getInstance();
+		LOG.trace("Getting DaoManager instance");
+		daoManager = DaoManager.getInstance();
 		LOG.debug("ToDoLineDao initialized");
 	}
 
+	/**
+	 * Method deletes all {@link ToDoLine}s from given {@link User} in DataBase
+	 * @throws DaoException if failed to delete all {@link ToDoLine}s
+	 * @param user
+	 */
 	public void deleteAll(User user) {
 		LOG.trace("Deleting all toDoLists at user " + user.getLogin());
 		String SQL = "DELETE FROM notes.to_do_line WHERE user_login = ?;";
@@ -37,7 +47,7 @@ public class ToDoLineDao {
 		PreparedStatement statement = null;
 
 		LOG.trace("Creating connection");
-		try (Connection connection = daoFactory.getConnection()) {
+		try (Connection connection = daoManager.getConnection()) {
 			try {
 				LOG.trace("Preparing statement");
 				statement = connection.prepareStatement(SQL);
@@ -56,6 +66,12 @@ public class ToDoLineDao {
 		LOG.info("All toDoLists were deleted at user " + user.getLogin());
 	}
 
+	/**
+	 * Method deletes given {@link ToDoLine} from {@link User} in DataBase
+	 * @throws DaoException if failed to delete {@link ToDoLine} by id
+	 * @param id
+	 * @param user
+	 */
 	public void delete(int id, User user) {
 		LOG.trace("Deleting toDoLine from user " + user.getLogin());
 		String SQL = "DELETE FROM notes.to_do_line WHERE user_login = ? AND id = ?;";
@@ -63,7 +79,7 @@ public class ToDoLineDao {
 		PreparedStatement statement = null;
 
 		LOG.trace("Creating connection");
-		try (Connection connection = daoFactory.getConnection()) {
+		try (Connection connection = daoManager.getConnection()) {
 			try {
 				LOG.trace("Preparing statement");
 				statement = connection.prepareStatement(SQL);
@@ -83,6 +99,12 @@ public class ToDoLineDao {
 		LOG.info("ToDoLine was deleted from user " + user.getLogin());
 	}
 
+	/**
+	 * Method changes given {@link ToDoLine} at {@link User} in DataBase
+	 * @throws DaoException if failed to change {@link ToDoLine}
+	 * @param note
+	 * @param user
+	 */
 	public void change(ToDoLine toDoLine, User user) {
 		LOG.trace("Changing toDoLine at user " + user.getLogin());
 		String SQL = "UPDATE notes.to_do_line set title = ?, time_change = ? WHERE user_login = ? AND id = ?;";
@@ -90,7 +112,7 @@ public class ToDoLineDao {
 		PreparedStatement statement = null;
 
 		LOG.trace("Creating connection");
-		try (Connection connection = daoFactory.getConnection()) {
+		try (Connection connection = daoManager.getConnection()) {
 			try {
 				LOG.trace("Preparing statement");
 				statement = connection.prepareStatement(SQL);
@@ -112,6 +134,13 @@ public class ToDoLineDao {
 		LOG.info("ToDoLine was changed at user " + user.getLogin());
 	}
 
+	/**
+	 * Create new {@link ToDoLine} with given id at given {@link User}
+	 * @throws DaoException if failed to create new {@link ToDoLine} 
+	 * @param id
+	 * @param user
+	 * @return created {@link ToDoLine}
+	 */
 	public ToDoLine create(int id, User user) {
 		LOG.trace("Creating new toDoLine for user " + user.getLogin());
 		StringBuffer SQLInsert = new StringBuffer("INSERT INTO notes.to_do_line (user_login, title, id, time_change, time_creation) VALUES ");
@@ -124,7 +153,7 @@ public class ToDoLineDao {
 		ResultSet resultSet = null;
 
 		LOG.trace("Creating connection");
-		try (Connection connection = daoFactory.getConnection()) {
+		try (Connection connection = daoManager.getConnection()) {
 			try {
 				LOG.trace("Preparing statement");
 				statement = connection.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
@@ -155,6 +184,12 @@ public class ToDoLineDao {
 		return toDoLine;
 	}
 
+	/**
+	 * Method returns all {@link ToDoLine}s from given {@link User}
+	 * @throws DaoException if failed to get all {@link ToDoLine}s
+	 * @param user
+	 * @return Collection of returned {@link ToDoLine}s from DataBase 
+	 */
 	public ArrayList<ToDoLine> getAll(User user) {
 		LOG.trace("Getting all toDoLines from user " + user.getLogin());
 		String SQL = "SELECT * FROM notes.to_do_line WHERE user_login = ?;";
@@ -165,7 +200,7 @@ public class ToDoLineDao {
 		ResultSet resultSet = null;
 
 		LOG.trace("Creating connection");
-		try (Connection connection = daoFactory.getConnection()) {
+		try (Connection connection = daoManager.getConnection()) {
 			try {
 				LOG.trace("Preparing statement");
 				statement = connection.prepareStatement(SQL);
@@ -192,6 +227,13 @@ public class ToDoLineDao {
 		return toDoLines;
 	}
 
+	/**
+	 * Method returns all {@link ToDoLine}s from given {@link User} which id satisfy given array
+	 * @throws DaoException if failed to get all {@link ToDoLine}s by given array of id
+	 * @param id
+	 * @param user
+	 * @return Collection of returned {@link ToDoLine}s from DataBase
+	 */
 	public ArrayList<ToDoLine> searchByPattern(Integer[] id, User user) {
 		LOG.trace("Getting all toDoLines by pattern from user " + user.getLogin());
 		String SQL = "SELECT * FROM notes.to_do_line WHERE user_login = ? AND id = ANY(?);";
@@ -202,7 +244,7 @@ public class ToDoLineDao {
 		ResultSet resultSet = null;
 
 		LOG.trace("Creating connection");
-		try (Connection connection = daoFactory.getConnection()) {
+		try (Connection connection = daoManager.getConnection()) {
 			try {
 				LOG.trace("Preparing statement");
 				statement = connection.prepareStatement(SQL);
@@ -230,6 +272,14 @@ public class ToDoLineDao {
 		return toDoLines;
 	}
 
+	/**
+	 * Method selects all line_id from tables of {@link ToDoLine} and {@link ToDo} 
+	 * where text of {@link ToDo}'s body and {@link ToDoLine}'s title satisfy given pattern {@link String}
+	 * @throws DaoException if failed to get all id by given pattern
+	 * @param user
+	 * @param pattern
+	 * @return array of line_id id
+	 */
 	public Integer[] getAllIdByPattern(User user, String pattern) {
 		LOG.trace("Getting all id of toDoLines that match pattern from user " + user.getLogin());
 		Set<Integer> allLinesId = new HashSet<>();
@@ -239,7 +289,7 @@ public class ToDoLineDao {
 		ResultSet resultSet = null;
 
 		LOG.trace("Creating connection");
-		try (Connection connection = daoFactory.getConnection()) {
+		try (Connection connection = daoManager.getConnection()) {
 			try {
 				LOG.trace("Preparing statement");
 				statement = connection.prepareStatement(SQL);

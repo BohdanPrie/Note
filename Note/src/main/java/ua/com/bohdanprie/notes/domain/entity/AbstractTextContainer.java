@@ -5,6 +5,12 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+/**
+ * Parent class for all user's elements as Notes, ToDoLines etc.
+ * <br>Have basic fields for all elements: id, title, timeCreation, timeChange.
+ * @author bohda
+ *
+ */
 public abstract class AbstractTextContainer {
 	private String title;
 	private int id;

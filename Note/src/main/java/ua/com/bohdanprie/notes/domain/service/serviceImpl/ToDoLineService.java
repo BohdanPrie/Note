@@ -2,6 +2,7 @@ package ua.com.bohdanprie.notes.domain.service.serviceImpl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -18,7 +19,11 @@ import ua.com.bohdanprie.notes.domain.entity.ToDo;
 import ua.com.bohdanprie.notes.domain.entity.ToDoLine;
 import ua.com.bohdanprie.notes.domain.entity.User;
 import ua.com.bohdanprie.notes.domain.service.TextService;
-
+/**
+ * Class provide work with {@link User}'s {@link ToDoLine}s. Implements {@link TextService}
+ * @author bohda
+ *
+ */
 public class ToDoLineService implements TextService {
 	private static final Logger LOG = LogManager.getLogger(ToDoLineService.class.getName());
 	private final ToDoDao toDoDao;
@@ -90,7 +95,7 @@ public class ToDoLineService implements TextService {
 	public String getAll(User user) {
 		LOG.trace("Getting all toDoLines and toDos from user " + user.getLogin());
 		ArrayList<ToDoLine> toDoLines = null;
-		Map<Integer, ArrayList<ToDo>> arraysToDo = null;
+		Map<Integer, List<ToDo>> arraysToDo = null;
 		try {
 			toDoLines = toDoLineDao.getAll(user);
 			arraysToDo = toDoDao.getAll(user);
@@ -110,7 +115,7 @@ public class ToDoLineService implements TextService {
 	public String getSortedByCreation(User user) {
 		LOG.trace("Getting sorted toDoLines by creation at user " + user.getLogin());
 		ArrayList<ToDoLine> toDoLines = null;
-		Map<Integer, ArrayList<ToDo>> arraysToDo = null;
+		Map<Integer, List<ToDo>> arraysToDo = null;
 		try {
 			toDoLines = toDoLineDao.getAll(user);
 			arraysToDo = toDoDao.getAll(user);
@@ -130,7 +135,7 @@ public class ToDoLineService implements TextService {
 	public String searchByPattern(User user, String pattern) {
 		LOG.trace("Getting all toDoLines and toDos by pattern from user " + user.getLogin());
 		ArrayList<ToDoLine> toDoLines = null;
-		Map<Integer, ArrayList<ToDo>> arraysToDo = null;
+		Map<Integer, List<ToDo>> arraysToDo = null;
 		Integer[] patternId = null;
 		try {
 			patternId = toDoLineDao.getAllIdByPattern(user, pattern);

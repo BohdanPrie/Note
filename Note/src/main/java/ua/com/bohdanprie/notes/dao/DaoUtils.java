@@ -2,10 +2,21 @@ package ua.com.bohdanprie.notes.dao;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+/**
+ * Class provide methods to work with DAO 
+ * @author bohda
+ *
+ */
 public final class DaoUtils {
 	private static final Logger LOG = LogManager.getLogger(DaoUtils.class.getName());
 
+	/**
+	 * Method build InsertQuery, based on number of inserted rows and number of inserted elements in each row.
+	 * <br>Do not insert values, but build String Query
+	 * @param numberRows
+	 * @param numberElements
+	 * @param SQL
+	 */
 	public static void buildInsertValuesQuery(int numberRows, int numberElements, StringBuffer SQL) {
 		LOG.trace("Building query to insert user's data");
 		if(SQL == null) {

@@ -6,7 +6,13 @@ import java.util.Objects;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+/**
+ * Class represent type of user's elements
+ * <br>extends {@link AbstractTextContainer}
+ * <br>Fields: {@link List} of {@link ToDo}
+ * @author bohda
+ *
+ */
 public class ToDoLine extends AbstractTextContainer{
 	private static final Logger LOG = LogManager.getLogger(ToDoLine.class.getName());
 	

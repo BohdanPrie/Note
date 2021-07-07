@@ -11,7 +11,11 @@ import ua.com.bohdanprie.notes.domain.entity.User;
 import ua.com.bohdanprie.notes.domain.exception.AuthorisationException;
 import ua.com.bohdanprie.notes.domain.exception.NoSuchUserException;
 import ua.com.bohdanprie.notes.domain.service.UserService;
-
+/**
+ * Class provide work with {@link User}'s data. Implements {@link UserService}
+ * @author bohda
+ *
+ */
 public class UserServiceImpl implements UserService {
 	private static final Logger LOG = LogManager.getLogger(UserServiceImpl.class.getName());
 	private final NoteService noteService;
@@ -28,6 +32,11 @@ public class UserServiceImpl implements UserService {
 		LOG.debug("UserService initialized");
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @throws NoSuchUserException if {@link User} wasn't found by given login
+	 * @throws AuthorisationException if {@link User}'s password is not correct
+	 */
 	@Override
 	public User authorisation(String login, String password) {
 		LOG.trace("Authorisation user  " + login);
@@ -50,6 +59,10 @@ public class UserServiceImpl implements UserService {
 		return user;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @throws AuthorisationException if {@link User} by given login already exist
+	 */
 	@Override
 	public User createAccount(String login, String password) {
 		LOG.trace("Creating user " + login);
@@ -67,6 +80,10 @@ public class UserServiceImpl implements UserService {
 		return user;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @throws NoSuchUserException if {@link User} wasn't found by given login
+	 */
 	@Override
 	public void changeLogin(String newLogin, User user) {
 		LOG.trace("Changing login for user " + user.getLogin());
@@ -83,6 +100,10 @@ public class UserServiceImpl implements UserService {
 		user.changeLogin(newLogin);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @throws NoSuchUserException if {@link User} wasn't found by given login
+	 */
 	@Override
 	public void changePassword(User user, String newPassword) {
 		LOG.trace("Changing password for user " + user.getLogin());
@@ -98,6 +119,10 @@ public class UserServiceImpl implements UserService {
 		LOG.info("Password changed for user " + user.getLogin());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @throws NoSuchUserException if {@link User} wasn't found by given login
+	 */
 	@Override
 	public void deleteUser(User user) {
 		LOG.trace("Deleting user " + user.getLogin());
@@ -112,6 +137,14 @@ public class UserServiceImpl implements UserService {
 		LOG.info("User " + user.getLogin() + " was deleted");
 	}
 
+	/**
+	 * Creates several new elements for every new {@link User}
+	 * <br>To show them to {@link User} when he first enters webpage
+	 * For example: 
+	 * <br>creates some {@link ua.com.bohdanprie.notes.domain.entity.Note}, 
+	 * <br>creates some {@link ua.com.bohdanprie.notes.domain.entity.ToDoLine}
+	 * @param user
+	 */
 	private void createForNewUser(User user) {
 		LOG.trace("Creating basic elements for user " + user.getLogin());
 		for (int id = 0; id < 2; id++) {

@@ -1,7 +1,13 @@
 package ua.com.bohdanprie.notes.domain.entity;
 
 import java.util.Objects;
-
+/**
+ * Class represent type of user's elements
+ * <br>extends {@link AbstractTextContainer}
+ * <br>Fields: body {@link String}
+ * @author bohda
+ *
+ */
 public class Note extends AbstractTextContainer {
 	
 	private String body;

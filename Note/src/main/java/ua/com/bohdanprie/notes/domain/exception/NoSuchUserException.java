@@ -1,5 +1,10 @@
 package ua.com.bohdanprie.notes.domain.exception;
 
+/**
+ * Thrown when user wasn't found in the system
+ * @author bohda
+ *
+ */
 @SuppressWarnings("serial")
 public class NoSuchUserException extends RuntimeException {
 	public NoSuchUserException() {

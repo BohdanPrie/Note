@@ -5,7 +5,15 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+/**
+ * Class represents system user
+ * <br>Fields: login {@link String} 
+ * <br>password {@link String}
+ * <br>{@link List} of {@link Note}
+ * <br>{@link List} of {@link ToDoLine}
+ * @author bohda
+ *
+ */
 public class User {
 	private static final Logger LOG = LogManager.getLogger(User.class.getName());
 	private String login;
@@ -14,8 +22,8 @@ public class User {
 	private List<ToDoLine> toDoLines = new ArrayList<>();
 
 	public User(String login, String password) {
-		this.login = login;
-		this.password = password;
+		this.changeLogin(login);
+		this.changePassword(password);
 	}
 
 	public String getLogin() {

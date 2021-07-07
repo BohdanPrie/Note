@@ -17,17 +17,27 @@ import ua.com.bohdanprie.notes.dao.exception.DBException;
 import ua.com.bohdanprie.notes.dao.exception.DaoException;
 import ua.com.bohdanprie.notes.domain.entity.Note;
 import ua.com.bohdanprie.notes.domain.entity.User;
-
+/**
+ * Class provide work with CRUD operations with {@link Note}
+ * @author bohda
+ *
+ */
 public class NoteDao {
-	private final DaoManager daoFactory;
+	private final DaoManager daoManager;
 	private static final Logger LOG = LogManager.getLogger(NoteDao.class.getName());
 
 	public NoteDao() {
-		LOG.trace("Getting DaoFactory instance");
-		daoFactory = DaoManager.getInstance();
+		LOG.trace("Getting DaoManager instance");
+		daoManager = DaoManager.getInstance();
 		LOG.debug("NoteDao initialized");
 	}
 
+	/**
+	 * Method changes given {@link Note} at {@link User} in DataBase
+	 * @throws DaoException if failed to change {@link Note}
+	 * @param note
+	 * @param user
+	 */
 	public void change(Note note, User user) {
 		LOG.trace("Changing note of user " + user.getLogin());
 		String SQL = "UPDATE notes.notes SET title = ?, body = ?, time_change = ? where user_login = ? AND id = ?;";
@@ -35,7 +45,7 @@ public class NoteDao {
 		PreparedStatement statement = null;
 
 		LOG.trace("Creating connection");
-		try (Connection connection = daoFactory.getConnection()) {
+		try (Connection connection = daoManager.getConnection()) {
 			try {
 				LOG.trace("Preparing statement");
 				statement = connection.prepareStatement(SQL);
@@ -58,6 +68,11 @@ public class NoteDao {
 		LOG.info("Note was changed at user " + user.getLogin());
 	}
 
+	/**
+	 * Method deletes all {@link Note}s from given {@link User} in DataBase
+	 * @throws DaoException if failed to delete all {@link Note}s
+	 * @param user
+	 */
 	public void deleteAll(User user) {
 		LOG.trace("Deleting all notes from user " + user.getLogin());
 		String SQL = "DELETE FROM notes.notes WHERE user_login = ?;";
@@ -65,7 +80,7 @@ public class NoteDao {
 		PreparedStatement statement = null;
 
 		LOG.trace("Creating connection");
-		try (Connection connection = daoFactory.getConnection()) {
+		try (Connection connection = daoManager.getConnection()) {
 			try {
 				LOG.trace("Preparing statement");
 				statement = connection.prepareStatement(SQL);
@@ -84,6 +99,12 @@ public class NoteDao {
 		LOG.info("All notes were deleted from user " + user.getLogin());
 	}
 
+	/**
+	 * Method deletes given {@link Note} from {@link User} in DataBase
+	 * @throws DaoException if failed to delete given {@link Note}
+	 * @param id
+	 * @param user
+	 */
 	public void delete(int id, User user) {
 		LOG.trace("Deleting note by id from user " + user.getLogin());
 		String SQL = "DELETE FROM notes.notes WHERE user_login = ? AND id = ?;";
@@ -91,7 +112,7 @@ public class NoteDao {
 		PreparedStatement statement = null;
 
 		LOG.trace("Creating connection");
-		try (Connection connection = daoFactory.getConnection()) {
+		try (Connection connection = daoManager.getConnection()) {
 			try {
 				LOG.trace("Preparing statement");
 				statement = connection.prepareStatement(SQL);
@@ -111,6 +132,13 @@ public class NoteDao {
 		LOG.info("Note was deleted from user " + user.getLogin());
 	}
 
+	/**
+	 * Create new {@link Note} with given id at given {@link User}
+	 * @throws DaoException if failed to create new {@link Note} 
+	 * @param id
+	 * @param user
+	 * @return created {@link Note}
+	 */
 	public Note create(int id, User user) {
 		LOG.trace("Creating new note for user " + user.getLogin());
 		StringBuffer SQLInsert = new StringBuffer("INSERT INTO notes.notes (user_login, title, body, id, time_creation, time_change) VALUES ");
@@ -123,7 +151,7 @@ public class NoteDao {
 		ResultSet resultSet = null;
 
 		LOG.trace("Creating connection");
-		try (Connection connection = daoFactory.getConnection()) {
+		try (Connection connection = daoManager.getConnection()) {
 			try {
 				LOG.trace("Preparing statement");
 				statement = connection.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
@@ -157,6 +185,13 @@ public class NoteDao {
 		return note;
 	}
 
+	/**
+	 * Method search in DataBase {@link Note}s at {@link User} that satisfy given pattern {@link String} 
+	 * @throws DaoException if failed to search {@link Note}s by given pattern {@link String}
+	 * @param user
+	 * @param pattern
+	 * @return Collection of {@link Note}s
+	 */
 	public ArrayList<Note> searchByPattern(User user, String pattern) {
 		LOG.trace("Getting all notes by pattern from user " + user.getLogin());
 		ArrayList<Note> notes = new ArrayList<>();
@@ -167,7 +202,7 @@ public class NoteDao {
 		ResultSet resultSet = null;
 
 		LOG.trace("Creating connection");
-		try (Connection connection = daoFactory.getConnection()) {
+		try (Connection connection = daoManager.getConnection()) {
 			try {
 				LOG.trace("Preparing statement");
 				statement = connection.prepareStatement(SQL);
@@ -197,6 +232,12 @@ public class NoteDao {
 		return notes;
 	}
 
+	/**
+	 * Method returns all {@link Note}s from given {@link User}
+	 * @throws DaoException if failed to get all {@link Note}s
+	 * @param user
+	 * @return Collection of returned {@link Note}s from DataBase 
+	 */
 	public ArrayList<Note> getAll(User user) {
 		LOG.trace("Getting all notes from user " + user.getLogin());
 		ArrayList<Note> notes = new ArrayList<>();
@@ -207,7 +248,7 @@ public class NoteDao {
 		ResultSet resultSet = null;
 
 		LOG.trace("Creating connection");
-		try (Connection connection = daoFactory.getConnection()) {
+		try (Connection connection = daoManager.getConnection()) {
 			try {
 				LOG.trace("Preparing statement");
 				statement = connection.prepareStatement(SQL);

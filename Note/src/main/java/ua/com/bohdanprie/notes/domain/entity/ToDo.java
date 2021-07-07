@@ -1,7 +1,12 @@
 package ua.com.bohdanprie.notes.domain.entity;
 
 import java.util.Objects;
-
+/**
+ * Element represents single user's task
+ * <br>Fields: id (int), body {@link String}, marked (boolean)  
+ * @author bohda
+ *
+ */
 public class ToDo {
 	private int id;
 	private String body;

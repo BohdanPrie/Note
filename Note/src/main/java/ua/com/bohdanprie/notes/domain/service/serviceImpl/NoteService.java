@@ -15,7 +15,11 @@ import ua.com.bohdanprie.notes.domain.ServiceUtils;
 import ua.com.bohdanprie.notes.domain.entity.Note;
 import ua.com.bohdanprie.notes.domain.entity.User;
 import ua.com.bohdanprie.notes.domain.service.TextService;
-
+/**
+ * Class provide work with {@link User}'s {@link Note}s. Implements {@link TextService}
+ * @author bohda
+ *
+ */
 public class NoteService implements TextService {
 	private static final Logger LOG = LogManager.getLogger(NoteService.class.getName());
 	private final NoteDao noteDao;
@@ -77,6 +81,11 @@ public class NoteService implements TextService {
 		user.getNotes().add(note);
 	}
 
+	/**
+	 * Return all notes from given {@link User}.
+	 * <br>Note: method calls {@link ServiceUtils#sortByLastChange(List)}.
+	 * <br>It's a basic sort, made to show user recently changed notes first
+	 */
 	@Override
 	public String getAll(User user) {
 		LOG.trace("Getting all notes from  user " + user.getLogin());
