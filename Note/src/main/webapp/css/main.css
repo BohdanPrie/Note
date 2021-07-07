@@ -48,11 +48,19 @@ body {
 }
 
 .strikethrough {
-	
+	width: 82%;
 }
 
 input[type=checkbox]:checked+span.strikethrough {
 	text-decoration: line-through;
+}
+
+input[type=checkbox] {
+	color: #fff;
+}
+
+input[type=checkbox]:checked {
+	color: #000;
 }
 
 input[type=checkbox]:checked+label.strikethrough {
@@ -297,6 +305,7 @@ input[type=checkbox]:checked+label.strikethrough {
 
 .checkbox {
 	vertical-align: top;
+	border-radius: 0%;
 }
 
 .menu {
@@ -337,6 +346,9 @@ input[type=checkbox]:checked+label.strikethrough {
 	.block_photo-text img {
 		width: auto;
 		height: auto;
+	}
+	.strikethrough {
+		width: 90%;
 	}
 }
 
@@ -499,6 +511,7 @@ input[type=checkbox]:checked+label.strikethrough {
 .formNote:focus {
 	outline: none;
 }
+
 
 .btnItalic {
 	font-family: "Lucida Console", "Courier New", monospace;

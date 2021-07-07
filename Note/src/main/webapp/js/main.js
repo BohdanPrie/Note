@@ -86,7 +86,7 @@ function setToDoToContainer(obj) {
 				+ lastContainer.children[i].id
 				+ '"><input class="checkbox" type="checkbox" style="cursor: pointer;"'
 				+ checked
-				+ '><span class="formNote strikethrough" style="white-space: normal; width: 90%; display: inline-block; margin-bottom: 0%;" contenteditable>'
+				+ '><span class="formNote strikethrough" style="white-space: normal; display: inline-block; margin-bottom: 0%;" contenteditable>'
 				+ removeAllTags(lastContainer.children[i].children[1].textContent)
 				+ '</span></div>';
 		textRedactor.insertAdjacentHTML('beforeend', toDo);
@@ -111,7 +111,7 @@ function addNewToDo() {
 						'beforeend',
 						'<div onclick="setCurrentTask(this)"  id = "'
 								+ maxInnerId
-								+ '"><input class="checkbox" type="checkbox"><span class="formNote span_width" style="white-space: normal; width: 90%; display: inline-block; margin-bottom: 0%;" contenteditable></span></div>');
+								+ '"><input class="checkbox" type="checkbox"><span class="formNote span_width" style="white-space: normal; display: inline-block; margin-bottom: 0%;" contenteditable></span></div>');
 	}
 }
 
@@ -186,7 +186,7 @@ function saveNote() {
 	document.getElementById('notes-container').removeChild(currentObj);
 
 	if (url == "notes") {
-		addNoteToPage(currentObj.id, title, body);
+		addNoteToPage(currentObj.id, document.getElementById('titleText').value, document.getElementById('noteText').value);
 	} else if (url == "toDos") {
 		addToDoLineToPage(currentObj.id, document.getElementById('titleText').value, collectToDoData());
 	}
@@ -258,6 +258,7 @@ function deleteNote() {
 	document.getElementById('notes-container').removeChild(currentObj);
 	document.getElementById('titleText').value = "";
 	document.getElementById('noteText').value = "";
+	document.getElementById('noteText').innerHTML = '';
 
 	if (document.getElementById('notes-container').childElementCount == 0) {
 		changeDisplay('format-container', 'none');
