@@ -24,7 +24,7 @@ To install this project on your machine follow these steps:
 4) Install postgresql and execute [database.sql](/Note/src/main/resources/database.sql)
 5) Change parameters in [context.xml](/Note/src/main/tomcatconf/context.xml)
 ````
-username="your_username"  // if you did'n change your_username, set default value (postgres)
+username="your_username"  // if you didn't change your_username, set default value (postgres)
 password="your_password" 
 url="jdbc:postgresql://localhost:5432/your_database_name"/>
 ````
