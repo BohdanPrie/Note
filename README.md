@@ -16,7 +16,7 @@ Testing | Junit
 Logging | org.apache.logging.log4j (version 2)
 JSON | com.fasterxml.jackson.core
 
-## Instalation
+## Installation
 To install this project on your machine follow these steps:
 1) Install java 8 or higher
 2) Install maven 
