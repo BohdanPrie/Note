@@ -157,7 +157,7 @@ public class NoteDao {
 				statement = connection.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
 				statement.setString(1, user.getLogin());
 				statement.setString(2, "Title");
-				statement.setString(3, "Body");
+				statement.setString(3, "Note");
 				statement.setInt(4, id);
 				statement.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
 				statement.setTimestamp(6, new Timestamp(System.currentTimeMillis()));

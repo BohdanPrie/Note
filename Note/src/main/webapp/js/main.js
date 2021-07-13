@@ -57,7 +57,7 @@ function add() {
 	maxId += 1;
 
 	if (url == "notes") {
-		addNoteToPage(maxId, 'Title', 'Note');
+		addNoteToPage(maxId, 'Title', 'Body');
 	} else if (url == "toDos") {
 		addToDoLineToPage(maxId, 'Title', null);
 	}
