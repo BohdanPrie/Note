@@ -31,7 +31,7 @@ username="your_username"  // if you didn't change your_username, set default val
 password="your_password" 
 url="jdbc:postgresql://localhost:5432/your_database_name"/> // if you didn't change your_database_name, set default value (notesapp)
 ````
-6) Execute next command: **mvn tomcat7:run**    
+6) Execute next command: **mvn install tomcat7:run**    
 
 ----
 ## Documentation
